@@ -1,55 +1,67 @@
-# Dependencies
-import pandas as pd
-import ast
 
-# Class imports
-from Classes import Image
-from Classes import CSVParser
-from Classes import CSVWriter
+# Classes
+from Classes.CSVReader import CSVReader
+from Classes.Image import Image
+from Classes.InputBox import InputBox
 
-# def get_dict(df):
-#     """ Returns a dictionary of an dataframe of predictions or
-#         ground truth
+# File paths
+img_folder = "/Users/jacobjanak/Documents/Code/VideaHealth/CS410_VideaHealth_sample_data/images"
+file_gt = "/Users/jacobjanak/Documents/Code/VideaHealth/CS410_VideaHealth_sample_data/1_ground_truth_2a.csv"
+file_pred = "/Users/jacobjanak/Documents/Code/VideaHealth/CS410_VideaHealth_sample_data/2_input_model_predictions_2.csv"
 
-#     Args:
-#         df_gt (pd.Dataframe): the dataframe with input data
 
-#     Returns:
-#         dict: dictionary with the boxes sorted by img_id
-#     """
+def parse_image_list(images_dict):
+    """
+    Converts data from the CSV format into a list of Image objects.
 
-#     boxes_per_img_id = {}
-#     for idx, img_id in enumerate(df["img_id"]):
-#         if "scores" in df.keys():
-#             boxes_per_img_id[img_id] = {
-#                 'labels': ast.literal_eval(df.iloc[idx]["labels"]),
-#                 'x1s': ast.literal_eval(df.iloc[idx]["x1s"]),
-#                 'y1s': ast.literal_eval(df.iloc[idx]["y1s"]),
-#                 'x2s': ast.literal_eval(df.iloc[idx]["x2s"]),
-#                 'y2s': ast.literal_eval(df.iloc[idx]["y2s"]),
-#                 'scores': ast.literal_eval(df.iloc[idx]["scores"]),
-#             }
-#         else:
-#             boxes_per_img_id[img_id] = {
-#                 'labels': ast.literal_eval(df.iloc[idx]["labels"]),
-#                 'x1s': ast.literal_eval(df.iloc[idx]["x1s"]),
-#                 'y1s': ast.literal_eval(df.iloc[idx]["y1s"]),
-#                 'x2s': ast.literal_eval(df.iloc[idx]["x2s"]),
-#                 'y2s': ast.literal_eval(df.iloc[idx]["y2s"]),
-#             }
+    Args:
+        images_dict: data formatted as dicts of parallel arrays
+        i.e. { "img_001": {"labels": ["tooth_1", "tooth_2"], "scores": [0.5, 0.2]} }
 
-#     return boxes_per_img_id
+    Returns:
+        arr: array of Image objects
+    """
 
-# # Data imports
-# img_folder = '/Users/jacobjanak/Documents/Code/VideaHealth/CS410_VideaHealth_sample_data/images'
+    images = []
+    for key, value in images_dict.items():
+        boxes = parse_box_list(value)
+        images.append(Image(key, boxes))
 
-# file_gt = '/Users/jacobjanak/Documents/Code/VideaHealth/CS410_VideaHealth_sample_data/1_ground_truth_2a.csv'
-# file_pred = '/Users/jacobjanak/Documents/Code/VideaHealth/CS410_VideaHealth_sample_data/2_input_model_predictions_2.csv'
+    return images
 
-# df_gt = pd.read_csv(file_gt)
-# df_pred = pd.read_csv(file_pred)
 
-# dict_pred = get_dict(df_pred)
-# dict_gt = get_dict(df_gt)
+def parse_box_list(image_dict):
+    """
+    Converts data from the CSV format into a list of Box objects for an Image.
 
-# print(dict_gt)
+    Args:
+        image_dict: data formatted as a dict of parallel arrays
+        i.e. {"labels": ["tooth_1", "tooth_2"], "scores": [0.5, 0.2]}
+
+    Returns:
+        arr: array of InputBox objects
+    """
+
+    boxes = []
+    for i in range(len(image_dict["labels"])):
+        boxes.append(InputBox(
+            image_dict["labels"][i],
+            image_dict["x1s"][i],
+            image_dict["y1s"][i],
+            image_dict["x2s"][i],
+            image_dict["y2s"][i],
+            image_dict["scores"][i]
+        ))
+
+    return boxes
+
+
+
+Reader = CSVReader(file_pred)
+images = parse_image_list(Reader.output)
+
+
+print(images)
+print(images[0])
+print(images[0].id)
+print(len(images[0].inputBoxes))
