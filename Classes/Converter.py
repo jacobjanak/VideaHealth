@@ -49,6 +49,8 @@ class Converter:
 
         Returns:
             arr: array of InputBox objects
+
+        NOTE: Should this class also reverse-convert? That would help with output
         """
 
         boxes = []
