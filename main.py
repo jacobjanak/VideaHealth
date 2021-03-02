@@ -7,9 +7,9 @@ from Classes.InputBox import InputBox
 
 # File paths
 # TO DO: make these usable for others
-img_folder = "/Users/jacobjanak/Documents/Code/VideaHealth/CS410_VideaHealth_sample_data/images"
-file_gt = "/Users/jacobjanak/Documents/Code/VideaHealth/CS410_VideaHealth_sample_data/1_ground_truth_2a.csv"
-file_pred = "/Users/jacobjanak/Documents/Code/VideaHealth/CS410_VideaHealth_sample_data/2_input_model_predictions_2.csv"
+img_folder = "CS410_VideaHealth_sample_data/images"
+file_gt = "CS410_VideaHealth_sample_data/1_ground_truth_2a.csv"
+file_pred = "CS410_VideaHealth_sample_data/2_input_model_predictions_2.csv"
 
 
 # Read the input CSV file
