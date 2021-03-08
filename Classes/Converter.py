@@ -10,7 +10,7 @@ Becomes:
 """
 
 from .Image import Image
-from .InputBox import InputBox
+from .PredictionBoundingBox import PredictionBoundingBox
 
 
 class Converter:
@@ -55,7 +55,7 @@ class Converter:
 
         boxes = []
         for i in range(len(image_dict["labels"])):
-            boxes.append(InputBox(
+            boxes.append(PredictionBoundingBox(
                 image_dict["labels"][i],
                 image_dict["x1s"][i],
                 image_dict["y1s"][i],

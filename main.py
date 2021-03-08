@@ -1,7 +1,7 @@
 from Classes.CSVReader import CSVReader
 from Classes.Converter import Converter
 from Classes.Image import Image
-from Classes.InputBox import InputBox
+from Classes.PredictionBoundingBox import PredictionBoundingBox
 
 # test comment
 
@@ -20,6 +20,38 @@ DataConverter = Converter(Reader.output)
 
 # Retrieve the image list
 images = DataConverter.result
+
+
+list_img = []
+for pbbox in images[0].inputBoxes:
+    if pbbox.label == 'tooth_18':
+        list_img.append(pbbox)
+
+list_img.sort(key=lambda ppbox: pbbox.score)
+
+
+
+def nms(image):
+
+    tempDict = image.inputDictionary.copy()
+
+    for key in tempDict:
+        # Step 1: Slect box with highest objectiveness score
+        tempDict[key].sort(key=lambda ppbox: ppbox.score)
+        bestpbbox = tempDict[key].pop(0)
+        for pbbox in tempDict[key]:
+            # Step 2: Compare the overlap of bestpbb with other pbb
+            if bestpbbox.iou(pbbox) > 0.50:
+                # Step 3: Remove with overlap > 50%
+                tempDict[key].remove(pbbox)
+
+        # Step 4: Should loop back to the beginning:
+
+
+
+    return tempDict
+
+newDic = nms(images[0])
 
 # Logging
 print(images)
