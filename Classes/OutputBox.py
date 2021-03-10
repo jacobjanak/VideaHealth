@@ -11,3 +11,4 @@ class OutputBox:
         self.y1s = y1s
         self.x2s = x2s
         self.y2s = y2s
+
