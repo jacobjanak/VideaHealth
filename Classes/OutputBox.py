@@ -3,7 +3,7 @@ TO DO: Description
 """
 
 
-class InputBox:
+class OutputBox:
 
     def __init__(self, label, x1s, y1s, x2s, y2s):
         self.label = label
