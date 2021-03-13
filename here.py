@@ -10,6 +10,8 @@ img_folder = 'C:/Users/I_cha/PycharmProjects/VideaHealth/images'
 file_gt = 'C:/Users/I_cha/PycharmProjects/VideaHealth/1_ground_truth_2a.csv'
 file_pred = 'C:/Users/I_cha/PycharmProjects/VideaHealth/2_input_model_predictions_2.csv'
 
+test_img = 'img_002'
+
 
 def get_dict(df):
     """ Returns a dictionary of an dataframe of predictions or
@@ -82,7 +84,7 @@ class Box:
         return self.area() + box2.area() - self.intersect(box2)
 
     def iou(self, box2):
-        return self.intersect(box2) / (self.union(box2))
+        return float(self.intersect(box2)) / float((self.union(box2)))
 
 
 """
@@ -168,50 +170,90 @@ def non_max_suppression(proposal_tooth):
     propose_list = proposal_tooth.copy()
     final_list = list()
     propose_list.sort(key=lambda t: t.score, reverse=True)
-    propose_list.sort(key=lambda t: int(t.label.strip('tooth__')))
+    # propose_list.sort(key=lambda t: int(t.label.strip('tooth__')))
 
     # remove low score boxes
     temp = propose_list.copy()
     for item in propose_list:
-        if item.score < 0.01:
+        if item.score < 0.2:
             temp.remove(item)
     propose_list = temp.copy()
 
-    dict_proposal = {}
-    for t in propose_list:
-        if t.label in dict_proposal:
-            dict_proposal[t.label].append(t)
-        else:
-            dict_proposal[t.label] = [t]
-
-    # step 1: filter box with the same classification
-    for label, teeth in dict_proposal.items():
-        filter_tooth = teeth.copy()
-        filter_tooth.sort(key=lambda t: t.score, reverse=True)
-        best = filter_tooth.pop(0)
-
-        for t in filter_tooth:
-            if best.box.iou(t.box) > 0.6:
-                filter_tooth.remove(t)
-        filter_tooth.append(best)
-        filter_tooth.sort(key=lambda t: t.score, reverse=True)
-
-        dict_proposal[label] = filter_tooth
-
-    # step 2: filter all boxes
-    propose_list = list()
-    for label, t2 in dict_proposal.items():
-        for item in t2:
-            propose_list.append(item)
+    # # convert list to dict
+    # dict_proposal = {}
+    # for t in propose_list:
+    #     if t.label in dict_proposal:
+    #         dict_proposal[t.label].append(t)
+    #     else:
+    #         dict_proposal[t.label] = [t]
+    #
+    # # step 1: filter box with the same classification
+    # for label, teeth in dict_proposal.items():
+    #     filter_tooth = teeth.copy()
+    #     filter_tooth.sort(key=lambda t: t.score, reverse=True)
+    #     best = filter_tooth.pop(0)
+    #
+    #     for t in filter_tooth:
+    #         if best.box.iou(t.box) > 0.6:
+    #             filter_tooth.remove(t)
+    #     filter_tooth.append(best)
+    #     filter_tooth.sort(key=lambda t: t.score, reverse=True)
+    #
+    #     dict_proposal[label] = filter_tooth
+    #
+    # # step 2: filter all boxes
+    # propose_list = list()
+    # for label, t2 in dict_proposal.items():
+    #     for item in t2:
+    #         propose_list.append(item)
 
     while len(propose_list) > 0:
-        # step 1: select the box with highest score
+        # step 2.1: select the box with highest score
+        propose_list.sort(key=lambda t: t.score, reverse=True)
+        # debug_best = max(propose_list, key=lambda t: t.score)
         best = propose_list.pop(0)
-        final_list.append(best)  # append it to final list
 
-        # step 2: compare best box with other boxes
+        # compare this best to existing boxes in final_list
+        found = False
+        for final in final_list:
+            if final.box.iou(best.box) > 0.3:
+                found = True
+                break
+        if not found:
+            final_list.append(best)  # append it to final list
+
+            # Load an color image in grayscale
+            img_path = os.path.join(img_folder, (test_img + '.png'))
+            img = cv2.imread(img_path)
+            img = cv2.cvtColor(img.astype(np.uint8), cv2.COLOR_BGR2RGB)
+
+            img_pred = img.copy()
+
+            for t in final_list:
+                cv2.rectangle(img_pred
+                              , (int(t.box.x1), int(t.box.y1))
+                              , (int(t.box.x2), int(t.box.y2))
+                              , color=(255, 0, 0)
+                              , thickness=2)
+                cv2.putText(img_pred, t.label + ' %.2f' % (t.score),
+                            (int(t.box.x1) + 10, int(t.box.y1) + 30), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.25,
+                            (255, 0, 0), 1, cv2.LINE_AA)
+
+            cv2.rectangle(img_pred
+                          , (int(best.box.x1), int(best.box.y1))
+                          , (int(best.box.x2), int(best.box.y2))
+                          , color=(0, 0, 255)
+                          , thickness=2)
+            cv2.putText(img_pred, best.label + ' %.2f' % (best.score),
+                        (int(best.box.x1) + 10, int(best.box.y1) + 30), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.25,
+                        (0, 0, 255), 1, cv2.LINE_AA)
+            cv2.namedWindow('img', cv2.WINDOW_NORMAL)
+            cv2.imshow('img', img_pred)
+            cv2.waitKey(0)
+
+        # step 2.2: compare best box with other boxes
         for tooth in propose_list:
-            if best.box.iou(tooth.box) > 0.6:
+            if best.box.iou(tooth.box) > 0.3:
                 propose_list.remove(tooth)
 
     # convert list into dict
@@ -223,7 +265,7 @@ def non_max_suppression(proposal_tooth):
             dict_proposal[item.label] = [item]
 
     # Load an color image in grayscale
-    img_path = os.path.join(img_folder, ('img_002' + '.png'))
+    img_path = os.path.join(img_folder, (test_img + '.png'))
     img = cv2.imread(img_path)
     img = cv2.cvtColor(img.astype(np.uint8), cv2.COLOR_BGR2RGB)
 
@@ -261,8 +303,8 @@ df_pred = pd.read_csv(file_pred)
 dict_pred = get_dict(df_pred)
 dict_gt = get_dict(df_gt)
 
-row = dict_pred['img_002']
-row_gt = dict_gt['img_002']
+row = dict_pred[test_img]
+row_gt = dict_gt[test_img]
 img_002 = list()
 img_002_gt = list()
 
@@ -302,7 +344,7 @@ for gt in img_002_gt:
 
 
 img_002.sort(key=lambda tooth: tooth.score, reverse=True)
-img_002.sort(key=lambda tooth: int(tooth.label.strip('tooth__')))
+# img_002.sort(key=lambda tooth: int(tooth.label.strip('tooth__')))
 # for tooth in img_002:
 #     print(tooth.label + "\t" + str(tooth.score))
 
