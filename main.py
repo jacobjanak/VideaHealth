@@ -19,10 +19,13 @@ file_pred = "CS410_VideaHealth_sample_data/2_input_model_predictions_2.csv"
 
 
 
-def get_nmsbox(box):
-    return [box.x1, box.x2, abs(box.x2 - box.x1), abs(box.y2 - box.y1)]
+def get_nmsbox(t):
+    return  [t.x1, t.y1, abs(t.x2 - t.x1), abs(t.y2 - t.y1)]
 
-def non_max_suppression(proposal_tooth, test_img):
+
+# Takes a list of  Boundary Boxes and the image info
+# Runs NMS
+def non_max_suppression_driver(proposal_tooth, test_img):
 
     nmsboxlist = []
     predscorelist = []
@@ -50,7 +53,7 @@ def non_max_suppression(proposal_tooth, test_img):
                       , (int(t.x2), int(t.y2))
                       , color=(255, 0, 0)
                       , thickness=2)
-        cv2.putText(img_pred, t.label + ' %.2f' % (t.score),
+        cv2.putText(img_pred, t.label + ' %.5f' % (t.score),
                     (int(t.x1) + 10, int(t.y1) + 30), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.25,
                     (255, 0, 0), 1, cv2.LINE_AA)
 
@@ -79,4 +82,4 @@ if "__main__":
     list_img.sort(key=lambda ppbox: pbbox.score)
 
     for image in images:
-        non_max_suppression(image, image.id)
+        non_max_suppression_driver(image, image.id)
