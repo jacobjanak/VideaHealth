@@ -3,6 +3,7 @@ import numpy as np
 import cv2, os
 import pandas as pd
 import ast
+from nms import nms
 
 
 img_folder = 'C:/Users/I_cha/PycharmProjects/VideaHealth/images'
@@ -10,7 +11,7 @@ img_folder = 'C:/Users/I_cha/PycharmProjects/VideaHealth/images'
 file_gt = 'C:/Users/I_cha/PycharmProjects/VideaHealth/1_ground_truth_2a.csv'
 file_pred = 'C:/Users/I_cha/PycharmProjects/VideaHealth/2_input_model_predictions_2.csv'
 
-test_img = 'img_002'
+test_img = 'img_004'
 
 
 def get_dict(df):
@@ -295,6 +296,44 @@ def non_max_suppression(proposal_tooth):
     return final_list
 
 
+# ========================================================================  #
+# nms library
+def non_max_suppression(proposal_tooth):
+    rects = []
+    scores = []
+    labels = []
+
+    for t in proposal_tooth:
+        rect = [t.box.x1, t.box.y1, abs(t.box.x2 - t.box.x1), abs(t.box.y2 - t.box.y1)]
+        rects.append(rect)
+        scores.append(t.score)
+        labels.append(t.label)
+
+    indices = nms.boxes(rects, scores)
+
+    # Load an color image in grayscale
+    img_path = os.path.join(img_folder, (test_img + '.png'))
+    img = cv2.imread(img_path)
+    img = cv2.cvtColor(img.astype(np.uint8), cv2.COLOR_BGR2RGB)
+
+    img_pred = img.copy()
+
+    index = 0
+    for t in proposal_tooth:
+        if index in indices:
+            cv2.rectangle(img_pred
+                            , (int(t.box.x1), int(t.box.y1))
+                            , (int(t.box.x2), int(t.box.y2))
+                            , color=(255, 0, 0)
+                            , thickness=2)
+            cv2.putText(img_pred, t.label + ' %.2f' % (t.score),
+                        (int(t.box.x1) + 10, int(t.box.y1) + 30), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.5,
+                        (255, 0, 0), 1, cv2.LINE_AA)
+            index += 1
+
+    cv2.namedWindow('img', cv2.WINDOW_NORMAL)
+    cv2.imshow('img', img_pred)
+    cv2.waitKey(0)
 
 
 df_gt = pd.read_csv(file_gt)
