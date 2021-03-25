@@ -14,17 +14,13 @@ file_gt = data_dir + "/1_ground_truth_2a.csv"
 file_pred = data_dir + "/2_input_model_predictions_2.csv"
 
 # Read the input CSV file
-Reader = CSVReader(file_pred)
+input_raw = CSVReader(file_pred).output
 
 # Convert the data in the CSV into a more usable format
-DataConverter = Converter(Reader.output)
-
-# Retrieve the image list
-images = DataConverter.result
+images = Converter(input_raw).result
 
 # Logging
 print(images)
 print(images[0])
 print(images[0].id)
 print(len(images[0].inputBoxes))
-# test git branch
