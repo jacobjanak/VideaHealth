@@ -1,16 +1,17 @@
+import sys
+import os
+
 from Classes.CSVReader import CSVReader
 from Classes.Converter import Converter
 from Classes.Image import Image
 from Classes.InputBox import InputBox
 
-# test comment jblafjdlksjf
-
 # File paths
-# TO DO: make these usable for others
-img_folder = "/Users/jacobjanak/Documents/Code/VideaHealth/CS410_VideaHealth_sample_data/images"
-file_gt = "/Users/jacobjanak/Documents/Code/VideaHealth/CS410_VideaHealth_sample_data/1_ground_truth_2a.csv"
-file_pred = "/Users/jacobjanak/Documents/Code/VideaHealth/CS410_VideaHealth_sample_data/2_input_model_predictions_2.csv"
-
+project_dir = os.path.dirname(os.path.abspath(__file__))
+data_dir = project_dir + "/CS410_VideaHealth_sample_data"
+img_folder = data_dir + "/images"
+file_gt = data_dir + "/1_ground_truth_2a.csv"
+file_pred = data_dir + "/2_input_model_predictions_2.csv"
 
 # Read the input CSV file
 Reader = CSVReader(file_pred)
