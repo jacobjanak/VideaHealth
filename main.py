@@ -1,10 +1,14 @@
 import sys
 import os
 
+# Import classes
 from Classes.CSVReader import CSVReader
 from Classes.Converter import Converter
 from Classes.Image import Image
 from Classes.InputBox import InputBox
+
+# Import accuracy script for testing
+from Tests.accuracy import accuracy
 
 # File paths
 project_dir = os.path.dirname(os.path.abspath(__file__))
@@ -15,12 +19,21 @@ file_pred = data_dir + "/2_input_model_predictions_2.csv"
 
 # Read the input CSV file
 input_raw = CSVReader(file_pred).output
+images_input = Converter(input_raw).result
 
-# Convert the data in the CSV into a more usable format
-images = Converter(input_raw).result
+# Import the ground truth data
+gt_raw = CSVReader(file_gt).output
+images_gt = Converter(gt_raw).result
 
-# Logging
-print(images)
-print(images[0])
-print(images[0].id)
-print(len(images[0].inputBoxes))
+# Test post processing scripts
+print("Testing haehn script:")
+from Scripts.haehn import haehn
+images_pred = haehn(images_input)
+accuracy(images_pred, images_gt)
+print()
+
+print("Testing best_box script:")
+from Scripts.best_box import best_box
+images_pred = best_box(images_input)
+accuracy(images_pred, images_gt)
+print()
