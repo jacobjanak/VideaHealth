@@ -1,29 +1,44 @@
+import sys
+import os
+
+# Import classes
 from Classes.CSVReader import CSVReader
 from Classes.Converter import Converter
 from Classes.Image import Image
 from Classes.InputBox import InputBox
 
-# test comment jblafjdlksjf
+# Import accuracy script for testing
+from Tests.accuracy import accuracy
 
 # File paths
-# TO DO: make these usable for others
-img_folder = "/Users/jacobjanak/Documents/Code/VideaHealth/CS410_VideaHealth_sample_data/images"
-file_gt = "/Users/jacobjanak/Documents/Code/VideaHealth/CS410_VideaHealth_sample_data/1_ground_truth_2a.csv"
-file_pred = "/Users/jacobjanak/Documents/Code/VideaHealth/CS410_VideaHealth_sample_data/2_input_model_predictions_2.csv"
-
+project_dir = os.path.dirname(os.path.abspath(__file__))
+data_dir = project_dir + "/CS410_VideaHealth_sample_data"
+img_folder = data_dir + "/images"
+file_gt = data_dir + "/1_ground_truth_2a.csv"
+file_pred = data_dir + "/2_input_model_predictions_2.csv"
 
 # Read the input CSV file
-Reader = CSVReader(file_pred)
+input_raw = CSVReader(file_pred).output
+images_input = Converter(input_raw).result
 
-# Convert the data in the CSV into a more usable format
-DataConverter = Converter(Reader.output)
+# Import the ground truth data
+gt_raw = CSVReader(file_gt).output
+images_gt = Converter(gt_raw).result
 
-# Retrieve the image list
-images = DataConverter.result
+############ Test post processing scripts
+print("\nTesting haehn script:")
+from Scripts.haehn import haehn
+images_pred = haehn(images_input)
+accuracy(images_pred, images_gt)
 
-# Logging
-print(images)
-print(images[0])
-print(images[0].id)
-print(len(images[0].inputBoxes))
-# test git branch
+print("\nTesting best_box script:")
+from Scripts.best_box import best_box
+images_pred = best_box(images_input)
+accuracy(images_pred, images_gt)
+
+print("\nTesting nms script:")
+from Scripts.nms import nonmaximum_suppression
+images_pred = nonmaximum_suppression(images_input)
+accuracy(images_pred, images_gt)
+
+print()
