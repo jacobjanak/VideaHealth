@@ -9,6 +9,7 @@ from Classes.InputBox import InputBox
 
 # Import accuracy script for testing
 from Tests.accuracy import accuracy
+from Tests.visualizer import visualizer
 
 # File paths
 project_dir = os.path.dirname(os.path.abspath(__file__))
@@ -26,19 +27,22 @@ gt_raw = CSVReader(file_gt).output
 images_gt = Converter(gt_raw).result
 
 ############ Test post processing scripts
-print("\nTesting haehn script:")
-from Scripts.haehn import haehn
-images_pred = haehn(images_input)
-accuracy(images_pred, images_gt)
+#print("\nTesting haehn script:")
+#from Scripts.haehn import haehn
+#images_pred = haehn(images_input)
+#accuracy(images_pred, images_gt)
+#visualizer(images_pred, images_gt)
 
 print("\nTesting best_box script:")
 from Scripts.best_box import best_box
 images_pred = best_box(images_input)
 accuracy(images_pred, images_gt)
+visualizer(images_pred, images_gt)
 
 print("\nTesting nms script:")
 from Scripts.nms import nonmaximum_suppression
 images_pred = nonmaximum_suppression(images_input)
 accuracy(images_pred, images_gt)
+visualizer(images_pred, images_gt)
 
 print()

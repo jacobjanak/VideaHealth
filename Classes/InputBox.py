@@ -32,3 +32,9 @@ class InputBox:
     def iou(self, box2):
         idk = self.intersect(box2) / (self.union(box2))
         return idk
+
+    def vec1(self):
+        return (int(self.x1s), int(self.y1s))
+
+    def vec2(self):
+        return (int(self.x2s), int(self.y2s))

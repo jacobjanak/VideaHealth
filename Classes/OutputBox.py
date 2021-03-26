@@ -12,3 +12,9 @@ class OutputBox:
         self.x2s = x2s
         self.y2s = y2s
 
+    def vec1(self):
+        return (int(self.x1s), int(self.y1s))
+
+    def vec2(self):
+        return (int(self.x2s), int(self.y2s))
+
