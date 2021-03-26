@@ -37,7 +37,7 @@ images_pred = best_box(images_input)
 accuracy(images_pred, images_gt)
 
 print("\nTesting nms script:")
-from Scripts.nms import nonmaximum_suppression
+from Scripts.non_maximum_suppression import nonmaximum_suppression
 images_pred = nonmaximum_suppression(images_input)
 accuracy(images_pred, images_gt)
 

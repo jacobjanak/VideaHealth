@@ -55,10 +55,12 @@ def accuracy(images_pred, images_gt):
         for i, image_gt in enumerate(images_gt):
 
             image_pred = None
+            # find the image label that match this ground truth image label ex) 'img_002' == 'img_002'
             for j in range(len(images_pred)):
                 if images_pred[j].id == image_gt.id:
                     image_pred = images_pred[j]
 
+            # iterate through all output boxes in our prediction
             for j, box_pred in enumerate(image_pred.outputBoxes):
 
                 # Find the ground truth box with the correct label
