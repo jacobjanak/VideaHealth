@@ -3,24 +3,24 @@ TO DO: Description
 """
 
 
-class PredictionBoundingBox:
+class InputBox:
 
     def __init__(self, label, x1, y1, x2, y2, score=None):
         self.label = label
-        self.x1 = x1
-        self.y1 = y1
-        self.x2 = x2
-        self.y2 = y2
+        self.x1s = x1
+        self.y1s = y1
+        self.x2s = x2
+        self.y2s = y2
         self.score = score
 
     def area(self):
-        return (self.x2 - self.x1 + 1) * (self.y2 - self.y1 + 1)
+        return (self.x2s - self.x1s + 1) * (self.y2s - self.y1s + 1)
 
     def intersect(self, box2):
-        xa = max(self.x1, box2.x1)
-        ya = max(self.y1, box2.y1)
-        xb = min(self.x2, box2.x2)
-        yb = min(self.y2, box2.y2)
+        xa = max(self.x1s, box2.x1s)
+        ya = max(self.y1s, box2.y1s)
+        xb = min(self.x2s, box2.x2s)
+        yb = min(self.y2s, box2.y2s)
         a = max(0, xb - xa + 1)
         b = max(0, yb - ya + 1)
         c = a * b

@@ -9,9 +9,9 @@ Becomes:
     [ {id: "img_001", inputBoxes: [{label: "tooth_1", score: 0.5}, {label: "tooth_2", score: 0.2}] } ]
 """
 
-from .Image import Image
-from .InputBox import InputBox
-from .OutputBox import OutputBox
+from Classes.Image import Image
+from Classes.InputBox import InputBox
+from Classes.OutputBox import OutputBox
 
 
 class Converter:

@@ -1,7 +1,7 @@
 from Classes.CSVReader import CSVReader
 from Classes.Converter import Converter
 from Classes.Image import Image
-from Classes.PredictionBoundingBox import PredictionBoundingBox
+from Classes.InputBox import InputBox
 
 
 # Test CSV Reader on a prediction CSV file
@@ -49,7 +49,7 @@ assert CSVReader("Tests/gt.csv").output == gt_correct_result, error_message
 
 
 # Test InputBox class
-test_box = PredictionBoundingBox("tooth_1", 1, 2, 3, 4, 0.5)
+test_box = InputBox("tooth_1", 1, 2, 3, 4, 0.5)
 error_message = "InputBox failed a test"
 assert test_box.label == "tooth_1", error_message
 assert test_box.x1s == 1, error_message
@@ -61,8 +61,8 @@ assert test_box.score == 0.5, error_message
 
 # Test Image class
 boxes = [
-    PredictionBoundingBox("tooth_14", 514, 1075, 438, 121, 0.6),
-    PredictionBoundingBox("tooth_15", 1070, 1568, 457, 256, 0.7888)
+    InputBox("tooth_14", 514, 1075, 438, 121, 0.6),
+    InputBox("tooth_15", 1070, 1568, 457, 256, 0.7888)
 ]
 test_image = Image("img_001", boxes)
 error_message = "Image class failed a test"
@@ -103,12 +103,12 @@ test_input = {
 }
 correct = [
     Image("img_002", [
-        PredictionBoundingBox("tooth_14", 514, 1075, 438, 121, 0.6),
-        PredictionBoundingBox("tooth_15", 1070, 1568, 457, 256, 0.7888)
+        InputBox("tooth_14", 514, 1075, 438, 121, 0.6),
+        InputBox("tooth_15", 1070, 1568, 457, 256, 0.7888)
     ]),
     Image("img_003", [
-        PredictionBoundingBox("tooth_3", 177, 1, 422, 331, 0.001),
-        PredictionBoundingBox("tooth_2", 0, 1, 188, 330, 0.5)
+        InputBox("tooth_3", 177, 1, 422, 331, 0.001),
+        InputBox("tooth_2", 0, 1, 188, 330, 0.5)
     ])
 ]
 actual = Converter(test_input).result
