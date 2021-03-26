@@ -10,7 +10,8 @@ Becomes:
 """
 
 from .Image import Image
-from .PredictionBoundingBox import PredictionBoundingBox
+from .InputBox import InputBox
+from .OutputBox import OutputBox
 
 
 class Converter:
@@ -55,13 +56,22 @@ class Converter:
 
         boxes = []
         for i in range(len(image_dict["labels"])):
-            boxes.append(PredictionBoundingBox(
-                image_dict["labels"][i],
-                image_dict["x1s"][i],
-                image_dict["y1s"][i],
-                image_dict["x2s"][i],
-                image_dict["y2s"][i],
-                image_dict["scores"][i]
-            ))
+            if "scores" in image_dict:
+                boxes.append(InputBox(
+                    image_dict["labels"][i],
+                    image_dict["x1s"][i],
+                    image_dict["y1s"][i],
+                    image_dict["x2s"][i],
+                    image_dict["y2s"][i],
+                    image_dict["scores"][i]
+                ))
+            else:
+                boxes.append(OutputBox(
+                    image_dict["labels"][i],
+                    image_dict["x1s"][i],
+                    image_dict["y1s"][i],
+                    image_dict["x2s"][i],
+                    image_dict["y2s"][i]
+                ))
 
         return boxes

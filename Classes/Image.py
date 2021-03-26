@@ -5,32 +5,22 @@ TO DO: Description
 
 class Image:
 
-    def __init__(self, id, inputBoxes):
+    def __init__(self, id, inputBoxes = []):
         self.id = id
         self.inputBoxes = inputBoxes
+        self.outputBoxes = []
+        # self.outputBoxes = self.postprocessing()
 
-        self.inputDictionary = dict()
+    # Eventually we will place our script in this method
+    # def postprocessing(self):
+    #     """ TO DO:
+    #     Uses self.inputBoxes to generate self.outputBoxes
 
-        for ppbox in inputBoxes:
-            if ppbox.label not in self.inputDictionary:
-                self.inputDictionary[ppbox.label] = [ppbox]
-            else:
-                self.inputDictionary[ppbox.label].append(ppbox)
+    #     Args:
+    #         None
 
-        self.outputBoxes = self.postprocessing()
+    #     Returns:
+    #         None
+    #     """
 
-    def __str__(self):
-        return f"id: {self.id}"
-
-    def postprocessing(self):
-        """ TO DO:
-        Uses self.inputBoxes to generate self.outputBoxes
-
-        Args:
-            None
-
-        Returns:
-            None
-        """
-
-        return
+    #     return

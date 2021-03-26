@@ -1,85 +1,44 @@
+import sys
 import os
 
-import numpy as np
-from nms import nms
-import cv2
-
+# Import classes
 from Classes.CSVReader import CSVReader
 from Classes.Converter import Converter
 from Classes.Image import Image
-from Classes.PredictionBoundingBox import PredictionBoundingBox
+from Classes.InputBox import InputBox
 
-# test comment
+# Import accuracy script for testing
+from Tests.accuracy import accuracy
 
 # File paths
-# TO DO: make these usable for others
-img_folder = "CS410_VideaHealth_sample_data/images"
-file_gt = "CS410_VideaHealth_sample_data/1_ground_truth_2a.csv"
-file_pred = "CS410_VideaHealth_sample_data/2_input_model_predictions_2.csv"
+project_dir = os.path.dirname(os.path.abspath(__file__))
+data_dir = project_dir + "/CS410_VideaHealth_sample_data"
+img_folder = data_dir + "/images"
+file_gt = data_dir + "/1_ground_truth_2a.csv"
+file_pred = data_dir + "/2_input_model_predictions_2.csv"
 
+# Read the input CSV file
+input_raw = CSVReader(file_pred).output
+images_input = Converter(input_raw).result
 
+# Import the ground truth data
+gt_raw = CSVReader(file_gt).output
+images_gt = Converter(gt_raw).result
 
-def get_nmsbox(t):
-    return  [t.x1, t.y1, abs(t.x2 - t.x1), abs(t.y2 - t.y1)]
+############ Test post processing scripts
+print("\nTesting haehn script:")
+from Scripts.haehn import haehn
+images_pred = haehn(images_input)
+accuracy(images_pred, images_gt)
 
+print("\nTesting best_box script:")
+from Scripts.best_box import best_box
+images_pred = best_box(images_input)
+accuracy(images_pred, images_gt)
 
-# Takes a list of  Boundary Boxes and the image info
-# Runs NMS
-def non_max_suppression_driver(proposal_tooth, test_img):
+print("\nTesting nms script:")
+from Scripts.nms import nonmaximum_suppression
+images_pred = nonmaximum_suppression(images_input)
+accuracy(images_pred, images_gt)
 
-    nmsboxlist = []
-    predscorelist = []
-    for tooth in proposal_tooth.inputBoxes:
-        nmsboxlist.append(get_nmsbox(tooth))
-        predscorelist.append(tooth.score)
-
-    bestrect = nms.boxes(nmsboxlist, predscorelist)
-    besttooth = []
-
-    # Load an color image in grayscale
-    img_path = os.path.join(img_folder, (test_img + '.png'))
-    img = cv2.imread(img_path)
-    img = cv2.cvtColor(img.astype(np.uint8), cv2.COLOR_BGR2RGB)
-
-    img_pred = img.copy()
-
-    for rectindex in bestrect:
-        besttooth.append(proposal_tooth.inputBoxes[rectindex])
-
-    for t in besttooth:
-
-        cv2.rectangle(img_pred
-                      , (int(t.x1), int(t.y1))
-                      , (int(t.x2), int(t.y2))
-                      , color=(255, 0, 0)
-                      , thickness=2)
-        cv2.putText(img_pred, t.label + ' %.5f' % (t.score),
-                    (int(t.x1) + 10, int(t.y1) + 30), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.25,
-                    (255, 0, 0), 1, cv2.LINE_AA)
-
-
-    cv2.namedWindow('img', cv2.WINDOW_NORMAL)
-    cv2.imshow('img', img_pred)
-    cv2.waitKey(0)
-
-
-if "__main__":
-
-    # Read the input CSV file
-    Reader = CSVReader(file_pred)
-
-    # Convert the data in the CSV into a more usable format
-    DataConverter = Converter(Reader.output)
-
-    # Retrieve the image list
-    images = DataConverter.result
-
-    list_img = []
-    for pbbox in images[0].inputBoxes:
-        if pbbox.label == 'tooth_18':
-            list_img.append(pbbox)
-
-    list_img.sort(key=lambda ppbox: pbbox.score)
-
-    for image in images:
-        non_max_suppression_driver(image, image.id)
+print()
