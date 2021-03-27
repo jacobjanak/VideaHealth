@@ -11,7 +11,8 @@ img_folder = 'C:/Users/I_cha/PycharmProjects/VideaHealth/images'
 file_gt = 'C:/Users/I_cha/PycharmProjects/VideaHealth/1_ground_truth_2a.csv'
 file_pred = 'C:/Users/I_cha/PycharmProjects/VideaHealth/2_input_model_predictions_2.csv'
 
-test_img = 'img_004'
+test_img = 'img_005'
+score_threshold = 0.35
 
 
 def get_dict(df):
@@ -320,7 +321,7 @@ def non_max_suppression(proposal_tooth):
 
     for index in indices:
         t = proposal_tooth[index]
-        if t.score > 0.35:
+        if t.score > score_threshold:
             cv2.rectangle(img_pred
                                 , (int(t.box.x1), int(t.box.y1))
                                 , (int(t.box.x2), int(t.box.y2))
@@ -333,8 +334,8 @@ def non_max_suppression(proposal_tooth):
                             (int(t.box.x1) + 0, int(t.box.y1) + 80), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.5,
                             (255, 0, 0), 1, cv2.LINE_AA)
 
-    cv2.namedWindow('img', cv2.WINDOW_NORMAL)
-    cv2.imshow('img', img_pred)
+    cv2.namedWindow(test_img, cv2.WINDOW_NORMAL)
+    cv2.imshow(test_img, img_pred)
     cv2.waitKey(0)
 
 
