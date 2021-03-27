@@ -21,6 +21,8 @@ def nonmaximum_suppression(images):
         best_rect = nms.boxes(nmsboxlist, predscorelist)
 
         for rect_index in best_rect:
-            image.outputBoxes.append(image.inputBoxes[rect_index])
+            box = image.inputBoxes[rect_index]
+            if box.score > 0.35:
+                image.outputBoxes.append(box)
 
     return images
