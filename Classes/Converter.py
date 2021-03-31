@@ -10,8 +10,7 @@ Becomes:
 """
 
 from Classes.Image import Image
-from Classes.InputBox import InputBox
-from Classes.OutputBox import OutputBox
+from Classes.Box import Box
 
 
 class Converter:
@@ -57,7 +56,7 @@ class Converter:
         boxes = []
         for i in range(len(image_dict["labels"])):
             if "scores" in image_dict:
-                boxes.append(InputBox(
+                boxes.append(Box(
                     image_dict["labels"][i],
                     image_dict["x1s"][i],
                     image_dict["y1s"][i],
@@ -66,7 +65,7 @@ class Converter:
                     image_dict["scores"][i]
                 ))
             else:
-                boxes.append(OutputBox(
+                boxes.append(Box(
                     image_dict["labels"][i],
                     image_dict["x1s"][i],
                     image_dict["y1s"][i],

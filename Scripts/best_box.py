@@ -16,7 +16,6 @@ Returns:
 """
 
 from Classes.Image import Image
-from Classes.OutputBox import OutputBox
 
 
 def best_box(images):

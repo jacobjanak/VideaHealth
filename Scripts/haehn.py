@@ -20,7 +20,7 @@ Returns:
 """
 
 from Classes.Image import Image
-from Classes.OutputBox import OutputBox
+from Classes.Box import Box
 
 
 def haehn(images):
@@ -46,7 +46,7 @@ def haehn(images):
             # Create the output box
             if total_score > 0.08:
                 box_meets_threshhold = False
-                result_box = OutputBox(key, 0, 0, 0, 0)
+                result_box = Box(key, 0, 0, 0, 0)
                 for box in boxes:
 
                     # Make sure at least one of the boxes meets threshhold

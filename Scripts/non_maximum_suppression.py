@@ -29,15 +29,8 @@ def nonmaximum_suppression(images):
             nmsboxlist.append(get_tf_box(tooth))
             predscorelist.append(tooth.score)
 
-        # best_rect = nms.boxes(nmsboxlist, predscorelist
-        #                       #, nms_algorithm=felzenszwalb.nms
-        #                         , score_threshold=0.35
-        #                     )
+        # best_rect = nms.boxes(nmsboxlist, predscorelist)
         best_rect = tf.image.non_max_suppression(nmsboxlist, predscorelist, max_output_size=32, score_threshold=0.35)
-
-        # kwargs = {'score_threshold': 0.35}
-        # best_rect = nms.boxes(nmsboxlist, predscorelist
-        #                       , nms_algorithm=nms.default_algorithm, **kwargs)
 
         for rect_index in best_rect:
             box = image.inputBoxes[rect_index]
