@@ -5,7 +5,7 @@ import math
 from Classes.CSVReader import CSVReader
 from Classes.Converter import Converter
 from Classes.Image import Image
-from Classes.InputBox import InputBox
+from Classes.Box import Box
 
 # File paths
 # current_dir = os.path.dirname(os.path.abspath(__file__))
