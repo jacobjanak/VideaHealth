@@ -6,11 +6,6 @@ import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import tensorflow as tf
 
-from nms import nms
-import nms.felzenszwalb as felzenszwalb
-import nms.fast as fast
-
-
 def get_nms_box(t):
     return [t.x1s, t.y1s, abs(t.x2s - t.x1s), abs(t.y2s - t.y1s)]
 
