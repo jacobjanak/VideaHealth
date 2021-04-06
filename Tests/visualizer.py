@@ -56,10 +56,10 @@ def visualizer(script_name, images_pred, images_gt):
             cv2.putText(img_both, label,
                         (int(outputBox.x1s) + 10, int(outputBox.y1s) + 30), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.5,
                         (255, 33, 0), 1, cv2.LINE_AA)
-
-        name = script_name + ': ' + images_gt[n].id
-        img_view = np.hstack((img_pred, img_gt, img_both))
-        cv2.namedWindow(name, cv2.WINDOW_NORMAL)
-        cv2.imshow(name, img_view)
-        cv2.waitKey(0)
+        if images_gt[n].id == "img_002":
+            name = script_name + ': ' + images_gt[n].id
+            img_view = np.hstack((img_pred, img_gt, img_both))
+            cv2.namedWindow(name, cv2.WINDOW_NORMAL)
+            cv2.imshow(name, img_view)
+            cv2.waitKey(0)
 

@@ -29,26 +29,34 @@ images_input = Converter(input_raw).result
 gt_raw = CSVReader(file_gt).output
 images_gt = Converter(gt_raw).result
 
-############ Test post processing scripts
-print("\nTesting haehn script:")
-from Scripts.haehn import haehn
-images_pred = haehn(images_input)
-# teeth_arrangements(images_pred)
-accuracy(images_pred, images_gt)
-# visualizer('haehn', images_pred, images_gt)
+# ############ Test post processing scripts
+# print("\nTesting haehn script:")
+# from Scripts.haehn import haehn
+# images_pred = haehn(images_input)
+# # teeth_arrangements(images_pred)
+# accuracy(images_pred, images_gt)
+# # visualizer('haehn', images_pred, images_gt)
 
-print("\nTesting best_box script:")
-from Scripts.best_box import best_box
-images_pred = best_box(images_input)
-# teeth_arrangements(images_pred)
-accuracy(images_pred, images_gt)
-# visualizer('best_box', images_pred, images_gt)
+# print("\nTesting best_box script:")
+# from Scripts.best_box import best_box
+# images_pred = best_box(images_input)
+# # teeth_arrangements(images_pred)
+# accuracy(images_pred, images_gt)
+# # visualizer('best_box', images_pred, images_gt)
 
-print("\nTesting nms script:")
 from Scripts.non_maximum_suppression import nonmaximum_suppression
-images_pred = nonmaximum_suppression(images_input)
-teeth_arrangements(images_pred)
-accuracy(images_pred, images_gt)
-# visualizer('nms', images_pred, images_gt)
+
+# print("\nTesting nms script:")
+for y in range(12, 21):
+    iouThreshold = y*0.05
+    for x in range(1, 21):
+        images_input = Converter(input_raw).result
+        threshold = x*0.05
+        print(iouThreshold, threshold)
+        
+        images_pred = nonmaximum_suppression(images_input, threshold, iouThreshold)
+        # teeth_arrangements(images_pred)
+        # accuracy(images_pred, images_gt)
+        visualizer('nms', images_pred, images_gt)
 
 print()
