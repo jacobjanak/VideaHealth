@@ -42,7 +42,7 @@ from Scripts.best_box import best_box
 images_pred = best_box(images_input)
 # teeth_arrangements(images_pred)
 accuracy(images_pred, images_gt)
-visualizer('best_box', images_pred, images_gt)
+# visualizer('best_box', images_pred, images_gt)
 
 print("\nTesting nms script:")
 from Scripts.non_maximum_suppression import nonmaximum_suppression
@@ -50,5 +50,12 @@ images_pred = nonmaximum_suppression(images_input)
 teeth_arrangements(images_pred)
 accuracy(images_pred, images_gt)
 # visualizer('nms', images_pred, images_gt)
+
+print("\nTesting best cluster haehn script:")
+from Scripts.best_cluster_haehn import best_cluster_haehn
+images_pred = best_cluster_haehn(images_input)
+# teeth_arrangements(images_pred)
+accuracy(images_pred, images_gt)
+visualizer('nms', images_pred, images_gt)
 
 print()

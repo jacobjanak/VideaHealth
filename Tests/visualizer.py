@@ -43,7 +43,6 @@ def visualizer(script_name, images_pred, images_gt):
         # For Loop of the image prediction output boxes
         for outputBox in images_pred[n].outputBoxes:
             label = 't' + outputBox.label.strip('tooth_')
-
             cv2.rectangle(img_pred, outputBox.vec1(), outputBox.vec2(), color=(255, 33, 0),
                           thickness=2)
             cv2.rectangle(img_both, outputBox.vec1(), outputBox.vec2(), color=(255, 33, 0),
