@@ -9,10 +9,12 @@ from Classes.Box import Box
 
 # Import accuracy script for testing
 from Tests.accuracy import accuracy
+from Tests.accuracy2 import accuracy2
 from Tests.visualizer import visualizer
 
 # Import teeth arrangement script to correct teeth classification
 from Scripts.teeth_arrangement import teeth_arrangements
+from Scripts.relabel import relabel
 
 # File paths
 project_dir = os.path.dirname(os.path.abspath(__file__))
@@ -43,6 +45,15 @@ images_gt = Converter(gt_raw).result
 # # teeth_arrangements(images_pred)
 # accuracy(images_pred, images_gt)
 # # visualizer('best_box', images_pred, images_gt)
+
+# #print("\nTesting best cluster haehn script:")
+# #from Scripts.best_cluster_haehn import best_cluster_haehn
+# images_pred = best_cluster_haehn(images_input)
+# # teeth_arrangements(images_pred)
+# relabel(images_pred)
+# accuracy(images_pred, images_gt)
+# accuracy2(images_pred, images_gt)
+# # visualizer('nms', images_pred, images_gt)
 
 from Scripts.non_maximum_suppression import nonmaximum_suppression
 

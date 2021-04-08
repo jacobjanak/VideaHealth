@@ -11,6 +11,9 @@ class Image:
         self.outputBoxes = []
         # self.outputBoxes = self.postprocessing()
 
+    def __repr__(self):
+        return "{}: {} input | {} output".format(self.id, len(self.inputBoxes), len(self.outputBoxes))
+
     # Eventually we will place our script in this method
     # def postprocessing(self):
     #     """ TO DO:
