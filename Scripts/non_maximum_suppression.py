@@ -15,7 +15,7 @@ def get_tf_box(t):
     return [t.y1s, t.x1s, t.y2s, t.x2s]
 
 
-def nonmaximum_suppression(images):
+def nonmaximum_suppression(images, threshold, iouThreshold):
     for image in images:
 
         nmsboxlist = []
@@ -26,7 +26,7 @@ def nonmaximum_suppression(images):
             predscorelist.append(tooth.score)
 
         # best_rect = nms.boxes(nmsboxlist, predscorelist)
-        best_rect = tf.image.non_max_suppression(nmsboxlist, predscorelist, max_output_size=32, score_threshold=0.35)
+        best_rect = tf.image.non_max_suppression(nmsboxlist, predscorelist, max_output_size=32, score_threshold=threshold,iou_threshold=iouThreshold)
 
         for rect_index in best_rect:
             box = image.inputBoxes[rect_index]
