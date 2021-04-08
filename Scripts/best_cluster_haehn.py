@@ -37,10 +37,7 @@ def best_cluster_haehn(images):
                     groups[best_box].append(box)
                     inputBoxes_temp.remove(box)
 
-        print(groups)
-
         # loop through each group to create new resulting boxes
-
         for bestbox, candidates in groups.items():
             result_box = Box(bestbox.label, 0, 0, 0, 0, bestbox.score)
 

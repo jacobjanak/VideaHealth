@@ -18,8 +18,8 @@ from Scripts.teeth_arrangement import teeth_arrangements
 project_dir = os.path.dirname(os.path.abspath(__file__))
 data_dir = project_dir + "/CS410_VideaHealth_sample_data"
 img_folder = data_dir + "/images"
-file_gt = data_dir + "/OLD/1_ground_truth_2a.csv"
-file_pred = data_dir + "/OLD/2_input_model_predictions_2.csv"
+file_gt = data_dir + "/1_ground_truth_2a.csv"
+file_pred = data_dir + "/2_input_model_predictions_2.csv"
 
 # Read the input CSV file
 input_raw = CSVReader(file_pred).output
