@@ -10,6 +10,7 @@ def accuracy2(images_pred, images_gt):
 
 			for image_gt in images_gt:
 				for gt_box in image_gt.inputBoxes:
+					
 					score = box.iou(gt_box)
 
 					if score > best_score:
@@ -19,4 +20,3 @@ def accuracy2(images_pred, images_gt):
 
 	# print("Number of boxes is {}".format(total_boxes))
 	print("Average IOU per box is {}".format(total_score / total_boxes))
-

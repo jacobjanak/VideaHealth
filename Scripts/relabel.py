@@ -15,7 +15,7 @@ def relabel(images):
 			# get the tooth number of the tooth and its two neighbors
 			tooth_num = boxes[i].tooth_num()
 			l_num = boxes[i - 1].tooth_num() if i > 0 else None
-			r_num = boxes[i + 1].tooth_num() if i < len(boxes) - 2 else None
+			r_num = boxes[i + 1].tooth_num() if i < len(boxes) - 1 else None
 
 			# identify lonely teeth
 			if ((l_num is None or tooth_num - 1 != l_num) and 
