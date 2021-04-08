@@ -16,6 +16,17 @@ class Box:
     def area(self):
         return (self.x2s - self.x1s + 1) * (self.y2s - self.y1s + 1)
 
+    # return a tuple cointing the coordinates (x, y)
+    def midpoint(self):
+        return ((self.x1s + self.x2s) / 2, (self.y1s + self.y2s) / 2)
+
+    # return the number in the tooths label
+    def tooth_num(self):
+        return int(self.label[6:])
+
+    def new_label(self, number):
+        self.label = "tooth_" + str(number)
+
     def intersect(self, box2):
         xa = max(self.x1s, box2.x1s)
         ya = max(self.y1s, box2.y1s)
