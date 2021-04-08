@@ -51,6 +51,9 @@ def accuracy(images_pred, images_gt):
         missing_boxes = 0
         extra_boxes = 0
         deviation = 0
+        numMatch = 0
+        offset = 20
+        numOfGt = 0
 
         for i, image_gt in enumerate(images_gt):
 
@@ -61,45 +64,51 @@ def accuracy(images_pred, images_gt):
                     image_pred = images_pred[j]
 
             # iterate through all output boxes in our prediction
-            for j, box_pred in enumerate(image_pred.outputBoxes):
-
-                # Find the ground truth box with the correct label
+            for k, gt_box in enumerate(image_gt.inputBoxes):
                 box_gt = None
-                for k in range(len(image_gt.inputBoxes)):
-                    if box_pred.label == image_gt.inputBoxes[k].label:
-                        box_gt = image_gt.inputBoxes[k]
-                
-                # Calculate the amount of pixels our script is off by
-                if box_gt is not None:
-                    total_matching_boxes += 1
+                numOfGt += 1
+                for j, box_pred in enumerate(image_pred.outputBoxes):
+                    
+                    # if abs(gt_box.x1s -box_pred.x1s) < offset and abs(gt_box.x2s -box_pred.x2s) < offset and abs(gt_box.y1s -box_pred.y1s) < offset and abs(gt_box.y2s -box_pred.y2s) < offset:
+                    #     print("match")
+                    #     numMatch += 1
+                    if gt_box.iou(box_pred) > 0.5:
+                        # print("match")
+                        numMatch += 1
+        # 
+        if numMatch == numOfGt:
+            t = input()
+            #     # Calculate the amount of pixels our script is off by
+            #     if box_gt is not None:
+            #         total_matching_boxes += 1
 
-                    x1_dev = abs(box_pred.x1s - box_gt.x1s)
-                    y1_dev = abs(box_pred.y1s - box_gt.y1s)
-                    deviation += math.sqrt(x1_dev ** 2 + y1_dev ** 2)
+            #         x1_dev = abs(box_pred.x1s - box_gt.x1s)
+            #         y1_dev = abs(box_pred.y1s - box_gt.y1s)
+            #         deviation += math.sqrt(x1_dev ** 2 + y1_dev ** 2)
 
-                    x2_dev = abs(box_pred.x2s - box_gt.x2s)
-                    y2_dev = abs(box_pred.y2s - box_gt.y2s)
-                    deviation += math.sqrt(x2_dev ** 2 + y2_dev ** 2)
+            #         x2_dev = abs(box_pred.x2s - box_gt.x2s)
+            #         y2_dev = abs(box_pred.y2s - box_gt.y2s)
+            #         deviation += math.sqrt(x2_dev ** 2 + y2_dev ** 2)
 
-                    # Old code that doesn't use hypotenuse:
-                    # deviation += abs(box_pred.x1s - box_gt.x1s)
-                    # deviation += abs(box_pred.y1s - box_gt.y1s)
-                    # deviation += abs(box_pred.x2s - box_gt.x2s)
-                    # deviation += abs(box_pred.y2s - box_gt.y2s)
+            #         # Old code that doesn't use hypotenuse:
+            #         # deviation += abs(box_pred.x1s - box_gt.x1s)
+            #         # deviation += abs(box_pred.y1s - box_gt.y1s)
+            #         # deviation += abs(box_pred.x2s - box_gt.x2s)
+            #         # deviation += abs(box_pred.y2s - box_gt.y2s)
 
-                # Identify extra boxes our script has generated
-                else: extra_boxes += 1
+            #     # Identify extra boxes our script has generated
+            #     else: extra_boxes += 1
 
-            # Identify missing boxes
-            for j, box_gt in enumerate(image_gt.inputBoxes):
-                box_pred = None
-                for k in range(len(image_pred.outputBoxes)):
-                    if box_gt.label == image_pred.outputBoxes[k].label:
-                        box_pred = image_pred.outputBoxes[k]
-                        break
-                if box_pred is None:
-                    missing_boxes += 1
+            # # Identify missing boxes
+            # for j, box_gt in enumerate(image_gt.inputBoxes):
+            #     box_pred = None
+            #     for k in range(len(image_pred.outputBoxes)):
+            #         if box_gt.label == image_pred.outputBoxes[k].label:
+            #             box_pred = image_pred.outputBoxes[k]
+            #             break
+            #     if box_pred is None:
+            #         missing_boxes += 1
 
-        print("Found {} missing boxes in our output".format(missing_boxes))
-        print("Found {} extra boxes in our output".format(extra_boxes))
-        print("Average deviation per box is {}".format(deviation / total_matching_boxes))
+        # print("Found {} missing boxes in our output".format(missing_boxes))
+        # print("Found {} extra boxes in our output".format(extra_boxes))
+        # print("Average deviation per box is {}".format(deviation / total_matching_boxes))

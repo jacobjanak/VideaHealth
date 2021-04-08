@@ -47,16 +47,15 @@ images_gt = Converter(gt_raw).result
 from Scripts.non_maximum_suppression import nonmaximum_suppression
 
 # print("\nTesting nms script:")
-for y in range(12, 21):
-    iouThreshold = y*0.05
-    for x in range(1, 21):
+for y in range(78, 79):
+    iouThreshold = y*0.01
+    for x in range(36, 37):
         images_input = Converter(input_raw).result
-        threshold = x*0.05
-        print(iouThreshold, threshold)
-        
-        images_pred = nonmaximum_suppression(images_input, threshold, iouThreshold)
+        scoreThreshold = x*0.01
+        print(iouThreshold, scoreThreshold)
+        images_pred = nonmaximum_suppression(images_input, scoreThreshold, iouThreshold)
         # teeth_arrangements(images_pred)
-        # accuracy(images_pred, images_gt)
+        accuracy(images_pred, images_gt)
         visualizer('nms', images_pred, images_gt)
 
 print()
