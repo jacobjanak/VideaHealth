@@ -13,6 +13,7 @@ from Tests.visualizer import visualizer
 
 # Import teeth arrangement script to correct teeth classification
 from Scripts.teeth_arrangement import teeth_arrangements
+from Scripts.relabel import relabel
 
 # File paths
 project_dir = os.path.dirname(os.path.abspath(__file__))
@@ -34,6 +35,7 @@ print("\nTesting haehn script:")
 from Scripts.haehn import haehn
 images_pred = haehn(images_input)
 # teeth_arrangements(images_pred)
+relabel(images_pred)
 accuracy(images_pred, images_gt)
 # visualizer('haehn', images_pred, images_gt)
 
@@ -41,13 +43,15 @@ print("\nTesting best_box script:")
 from Scripts.best_box import best_box
 images_pred = best_box(images_input)
 # teeth_arrangements(images_pred)
+relabel(images_pred)
 accuracy(images_pred, images_gt)
 # visualizer('best_box', images_pred, images_gt)
 
 print("\nTesting nms script:")
 from Scripts.non_maximum_suppression import nonmaximum_suppression
 images_pred = nonmaximum_suppression(images_input)
-teeth_arrangements(images_pred)
+# teeth_arrangements(images_pred)
+relabel(images_pred)
 accuracy(images_pred, images_gt)
 # visualizer('nms', images_pred, images_gt)
 

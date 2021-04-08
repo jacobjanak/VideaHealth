@@ -16,6 +16,10 @@ class Box:
     def area(self):
         return (self.x2s - self.x1s + 1) * (self.y2s - self.y1s + 1)
 
+    def midpoint(self):
+        # return a tuple cointing the coordinates (x, y)
+        return ((self.x1s + self.x2s) / 2, (self.y1s + self.y2s) / 2)
+
     def intersect(self, box2):
         xa = max(self.x1s, box2.x1s)
         ya = max(self.y1s, box2.y1s)
