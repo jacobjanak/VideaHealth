@@ -5,43 +5,43 @@ becomes [11, 12, 13, 14].
 """
 
 def relabel(images):
-	# currently we consider each xray to have 0 or 1 gaps in numbering
-	# an xray has 1 gap is it is 2 rows of teeth, 0 gaps if it is 1 row
-	gaps = 0
-
 	for image in images:
-		image.outputBoxes.sort(key=lambda box: int(box.label[6:]))
-
-		# find the biggest gap between teeth. useful if there's 2 rows of teeth
-		# biggest_gap = 1
-		# biggest_index = 0
-		# for i in range(len(image.outputBoxes) - 1):
-		# 	tooth_num = image.outputBoxes[i].label[6:]
-		# 	neighbor_num = image.outputBoxes[i + 1].label[6:]
-		# 	number_gap = neighbor_num - tooth_num
-		# 	if number_gap > biggest_gap:
-		# 		biggest_gap = number_gap
-		# 		biggest_index = i
+		boxes = image.outputBoxes
+		boxes.sort(key=lambda box: box.tooth_num())
 
 		# adjust any labels except for the biggest gap
-		for i in range(len(image.outputBoxes) - 1):
-			tooth_num = int(image.outputBoxes[i].label[6:])
-			neighbor_num = int(image.outputBoxes[i + 1].label[6:])
+		for i in range(len(boxes) - 1):
 
-			# if i != biggest_index:
-			if neighbor_num - tooth_num == 2:
+			# get the tooth number of the tooth and its two neighbors
+			tooth_num = boxes[i].tooth_num()
+			l_num = boxes[i - 1].tooth_num() if i > 0 else None
+			r_num = boxes[i + 1].tooth_num() if i < len(boxes) - 2 else None
 
-				# we need to move a label left or right
-				if i < len(image.outputBoxes) - 2:
-					r_num = int(image.outputBoxes[i + 2].label[6:])
-					if r_num - neighbor_num > 1:
-						image.outputBoxes[i + 1].label = "tooth_" + str(neighbor_num - 1)
-					elif (i == 0):
-						image.outputBoxes[i].label = "tooth_" + str(tooth_num + 1)
+			# identify lonely teeth
+			if ((l_num is None or tooth_num - 1 != l_num) and 
+			   	(r_num is None or tooth_num + 1 != r_num)):
 
-				elif i > 1:
-					l_num = int(image.outputBoxes[i - 1].label[6:])
-					if tooth_num - l_num > 1:
-						image.outputBoxes[i].label = "tooth_" + str(tooth_num + 1)
-					elif i == len(image.outputBoxes) - 2:
-						image.outputBoxes[i + 1].label = "tooth_" + str(neighbor_num - 1)
+				if l_num is None:
+					boxes[i].new_label(r_num - 1)
+
+				elif r_num is None:
+					boxes[i].new_label(l_num + 1)
+
+				# we now know we need to move boxes[i] but which direction?
+				else:
+				   	l_diff = tooth_num - l_num
+				   	r_diff = r_num - tooth_num
+
+				   	if l_diff < r_diff:
+				   		boxes[i].new_label(l_num + 1)
+
+				   	elif r_diff < l_diff:
+				   		boxes[i].new_label(r_num - 1)
+
+				   	# this else should happen rarely
+				   	else:
+				   		# NOTE: we should add much more logic here but for now this is fine
+				   		if l_num is not None:
+				   			boxes[i].new_label(l_num + 1)
+				   		else:
+				   			boxes[i].new_label(r_num - 1)

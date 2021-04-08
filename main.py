@@ -9,7 +9,7 @@ from Classes.Box import Box
 
 # Import accuracy script for testing
 from Tests.accuracy import accuracy
-from Tests.visualizer import visualizer
+# from Tests.visualizer import visualizer
 
 # Import teeth arrangement script to correct teeth classification
 from Scripts.teeth_arrangement import teeth_arrangements
@@ -47,12 +47,12 @@ relabel(images_pred)
 accuracy(images_pred, images_gt)
 # visualizer('best_box', images_pred, images_gt)
 
-print("\nTesting nms script:")
-from Scripts.non_maximum_suppression import nonmaximum_suppression
-images_pred = nonmaximum_suppression(images_input)
-# teeth_arrangements(images_pred)
-relabel(images_pred)
-accuracy(images_pred, images_gt)
-# visualizer('nms', images_pred, images_gt)
+# print("\nTesting nms script:")
+# from Scripts.non_maximum_suppression import nonmaximum_suppression
+# images_pred = nonmaximum_suppression(images_input)
+# # teeth_arrangements(images_pred)
+# relabel(images_pred)
+# accuracy(images_pred, images_gt)
+# # visualizer('nms', images_pred, images_gt)
 
 print()
