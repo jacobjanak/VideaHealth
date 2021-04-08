@@ -9,6 +9,7 @@ from Classes.Box import Box
 
 # Import accuracy script for testing
 from Tests.accuracy import accuracy
+from Tests.NMSaccuracy import NMSaccuracy
 from Tests.accuracy2 import accuracy2
 from Tests.visualizer import visualizer
 
@@ -58,15 +59,15 @@ images_gt = Converter(gt_raw).result
 from Scripts.non_maximum_suppression import nonmaximum_suppression
 
 # print("\nTesting nms script:")
-for y in range(78, 79):
+for y in range(1, 101):
     iouThreshold = y*0.01
-    for x in range(36, 37):
+    for x in range(1, 101):
         images_input = Converter(input_raw).result
         scoreThreshold = x*0.01
         print(iouThreshold, scoreThreshold)
         images_pred = nonmaximum_suppression(images_input, scoreThreshold, iouThreshold)
         # teeth_arrangements(images_pred)
-        accuracy(images_pred, images_gt)
-        visualizer('nms', images_pred, images_gt)
+        NMSaccuracy(images_pred, images_gt)
+        # visualizer('nms', images_pred, images_gt)
 
 print()
