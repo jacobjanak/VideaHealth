@@ -38,3 +38,6 @@ class Box:
 
     def vec2(self):
         return (int(self.x2s), int(self.y2s))
+
+    def __repr__(self):
+        return "{}: score={:.2f} |{:.2f}, {:.2f}, {:.2f}, {:.2f}|".format(self.label, self.score, self.x1s, self.y1s, self.x2s, self.y2s)

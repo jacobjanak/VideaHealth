@@ -18,8 +18,8 @@ from Scripts.teeth_arrangement import teeth_arrangements
 project_dir = os.path.dirname(os.path.abspath(__file__))
 data_dir = project_dir + "/CS410_VideaHealth_sample_data"
 img_folder = data_dir + "/images"
-file_gt = data_dir + "/1_ground_truth.csv"
-file_pred = data_dir + "/2_input_model_predictions.csv"
+file_gt = data_dir + "/1_ground_truth_2a.csv"
+file_pred = data_dir + "/2_input_model_predictions_2.csv"
 
 # Read the input CSV file
 input_raw = CSVReader(file_pred).output
@@ -50,5 +50,12 @@ images_pred = nonmaximum_suppression(images_input)
 teeth_arrangements(images_pred)
 accuracy(images_pred, images_gt)
 # visualizer('nms', images_pred, images_gt)
+
+print("\nTesting best cluster haehn script:")
+from Scripts.best_cluster_haehn import best_cluster_haehn
+images_pred = best_cluster_haehn(images_input)
+# teeth_arrangements(images_pred)
+accuracy(images_pred, images_gt)
+visualizer('nms', images_pred, images_gt)
 
 print()
