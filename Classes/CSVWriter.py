@@ -3,9 +3,6 @@ import csv
 import pandas as pd
 import ast
 
-from Classes.Image import Image
-from Classes.Box import box
-
 class CSVWriter:
 
     # add csv writer to main to run

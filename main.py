@@ -27,8 +27,8 @@ data_dir = project_dir + "/CS410_VideaHealth_sample_data"
 img_folder = data_dir + "/images"
 # file_gt = data_dir + "/OLD/1_ground_truth_2a.csv"
 # file_pred = data_dir + "/OLD/2_input_model_predictions_2.csv"
-file_gt = data_dir + "/1_ground_truth.csv"
-file_pred = data_dir + "/2_input_model_predictions.csv"
+file_gt = data_dir + "/1_ground_truth_2a.csv"
+file_pred = data_dir + "/2_input_model_predictions_2.csv"
 
 # Read the input CSV file
 input_raw = CSVReader(file_pred).output
@@ -64,7 +64,7 @@ print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
 
 print("\nTesting nms script:")
 from Scripts.non_maximum_suppression import nonmaximum_suppression
-images_pred = nonmaximum_suppression(images_input)
+images_pred = nonmaximum_suppression(images_input, 0.5, 0.5)
 # teeth_arrangements(images_pred)
 #relabel(images_pred)
 accuracy(images_pred, images_gt)
