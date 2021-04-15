@@ -42,7 +42,7 @@ def best_box(images):
                     best_box = box
 
             # Store and return results
-            if best_box.score > 0.19:
+            if best_box.score > 0.35:
                 result_image.outputBoxes.append(best_box)
         result_images.append(result_image)
     return result_images

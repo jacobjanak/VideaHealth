@@ -44,13 +44,13 @@ def haehn(images):
             total_score = sum(box.score ** 3 for box in boxes)
 
             # Create the output box
-            if total_score > 0.08:
+            if total_score > 0.1:
                 box_meets_threshhold = False
                 result_box = Box(key, 0, 0, 0, 0)
                 for box in boxes:
 
                     # Make sure at least one of the boxes meets threshhold
-                    if box.score > 0.1:
+                    if box.score > 0.5:
                         box_meets_threshhold = True
 
                     # Average out the x and y coordinates of the boxes

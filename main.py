@@ -9,11 +9,14 @@ from Classes.Box import Box
 
 # Import accuracy script for testing
 from Tests.accuracy import accuracy
+from Tests.NMSaccuracy import NMSaccuracy
+from Tests.accuracy2 import accuracy2
 from Tests.visualizer import visualizer
 from Tests.precision_recall import precision_recall_iou, f1_iou, precision_recall_ious, f1_ious
 
 # Import teeth arrangement script to correct teeth classification
 from Scripts.teeth_arrangement import teeth_arrangements
+from Scripts.relabel import relabel
 
 # File paths
 project_dir = os.path.dirname(os.path.abspath(__file__))
@@ -70,5 +73,20 @@ accuracy(images_pred, images_gt)
 print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_gt, iou_threshold)))
 print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
 # visualizer('nms', images_pred, images_gt)
+
+# Tony's Magic Number Code
+# from Scripts.non_maximum_suppression import nonmaximum_suppression
+#
+# # print("\nTesting nms script:")
+# for y in range(1, 101):
+#     iouThreshold = y*0.01
+#     for x in range(1, 101):
+#         images_input = Converter(input_raw).result
+#         scoreThreshold = x*0.01
+#         print(iouThreshold, scoreThreshold)
+#         images_pred = nonmaximum_suppression(images_input, scoreThreshold, iouThreshold)
+#         # teeth_arrangements(images_pred)
+#         NMSaccuracy(images_pred, images_gt)
+#         # visualizer('nms', images_pred, images_gt)
 
 print()
