@@ -4,7 +4,7 @@ import pandas as pd
 import ast
 
 from Classes.Image import Image
-from Classes.Box import Box
+from Classes.Box import box
 
 class CSVWriter:
 
@@ -15,6 +15,7 @@ class CSVWriter:
     # 2 is inputBoxes
 
     def __init__(self, image_boxes_data, in_or_out_boxes):
+
 
         self.date_frame(image_boxes_data, in_or_out_boxes)
 
