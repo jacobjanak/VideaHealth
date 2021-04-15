@@ -11,7 +11,7 @@ img_folder = 'C:/Users/I_cha/PycharmProjects/VideaHealth/images'
 file_gt = 'C:/Users/I_cha/PycharmProjects/VideaHealth/1_ground_truth_2a.csv'
 file_pred = 'C:/Users/I_cha/PycharmProjects/VideaHealth/2_input_model_predictions_2.csv'
 
-test_img = 'img_005'
+test_img = 'img_002'
 score_threshold = 0.35
 
 
@@ -319,24 +319,24 @@ def non_max_suppression(proposal_tooth):
 
     img_pred = img.copy()
 
-    for index in indices:
-        t = proposal_tooth[index]
-        if t.score > score_threshold:
-            cv2.rectangle(img_pred
-                                , (int(t.box.x1), int(t.box.y1))
-                                , (int(t.box.x2), int(t.box.y2))
-                                , color=(255, 0, 0)
-                                , thickness=2)
-            cv2.putText(img_pred, 't' + t.label.strip('tooth_'),
-                            (int(t.box.x1) + 10, int(t.box.y1) + 30), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.5,
-                            (255, 0, 0), 1, cv2.LINE_AA)
-            cv2.putText(img_pred, ' %.2f' % (t.score),
-                            (int(t.box.x1) + 0, int(t.box.y1) + 80), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.5,
-                            (255, 0, 0), 1, cv2.LINE_AA)
-
-    cv2.namedWindow(test_img, cv2.WINDOW_NORMAL)
-    cv2.imshow(test_img, img_pred)
-    cv2.waitKey(0)
+    # for index in indices:
+    #     t = proposal_tooth[index]
+    #     if t.score > score_threshold:
+    #         cv2.rectangle(img_pred
+    #                             , (int(t.box.x1), int(t.box.y1))
+    #                             , (int(t.box.x2), int(t.box.y2))
+    #                             , color=(255, 0, 0)
+    #                             , thickness=2)
+    #         cv2.putText(img_pred, 't' + t.label.strip('tooth_'),
+    #                         (int(t.box.x1) + 10, int(t.box.y1) + 30), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.5,
+    #                         (255, 0, 0), 1, cv2.LINE_AA)
+    #         cv2.putText(img_pred, ' %.2f' % (t.score),
+    #                         (int(t.box.x1) + 0, int(t.box.y1) + 80), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.5,
+    #                         (255, 0, 0), 1, cv2.LINE_AA)
+    #
+    # cv2.namedWindow(test_img, cv2.WINDOW_NORMAL)
+    # cv2.imshow(test_img, img_pred)
+    # cv2.waitKey(0)
 
 
 df_gt = pd.read_csv(file_gt)
@@ -442,22 +442,31 @@ for img_id in tqdm(dict_pred):
                     (100, 255, 0), 1, cv2.LINE_AA)
 
     for idx, label in enumerate(pred_img_id["labels"]):
-        # if label == 'tooth_21':
-        x1 = int(pred_img_id['x1s'][idx])
-        y1 = int(pred_img_id['y1s'][idx])
-        x2 = int(pred_img_id['x2s'][idx])
-        y2 = int(pred_img_id['y2s'][idx])
-        score = float(pred_img_id['scores'][idx])
+        if label == 'tooth_2':
+            x1 = int(pred_img_id['x1s'][idx])
+            y1 = int(pred_img_id['y1s'][idx])
+            x2 = int(pred_img_id['x2s'][idx])
+            y2 = int(pred_img_id['y2s'][idx])
+            score = float(pred_img_id['scores'][idx])
 
-        if score >= 0.0:
-            cv2.rectangle(img_pred, (x1, y1), (x2, y2), color=(255, 0, 0),
-                          thickness=2)
-            cv2.putText(img_pred, label + ' %.2f' % (score),
-                        (x1 + 10, y1 + 30), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.5,
-                        (255, 0, 0), 1, cv2.LINE_AA)
+            if score >= 0.0:
+                cv2.rectangle(img_pred, (x1, y1), (x2, y2), color=(255, 0, 0),
+                              thickness=2)
+                cv2.putText(img_pred, label + ' %.2f' % (score),
+                            (x1 + 10, y1 + 30), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.5,
+                            (255, 0, 0), 1, cv2.LINE_AA)
 
-    img_view = np.hstack((img_raw, img_pred, img_gt))
-    # img_view = cv2.resize(img_view, (960, 540))
-    cv2.namedWindow('img', cv2.WINDOW_NORMAL)
-    cv2.imshow('img', img_view)
-    cv2.waitKey(0)
+    # img_view = np.hstack((img_raw, img_pred, img_gt))
+    # # img_view = cv2.resize(img_view, (960, 540))
+    # cv2.namedWindow('img', cv2.WINDOW_NORMAL)
+    # cv2.imshow('img', img_view)
+    # cv2.waitKey(0)
+
+
+image = np.zeros((300, 300, 3), np.uint8)
+color = tuple(reversed((1, 2, 3)))
+image[:] = color
+cv2.namedWindow('Blank Image', cv2.WINDOW_NORMAL)
+cv2.imshow('Blank Image', image)
+# cv2.imwrite('white.jpg', image)
+cv2.waitKey(0)
