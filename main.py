@@ -27,11 +27,12 @@ data_dir = project_dir + "/CS410_VideaHealth_sample_data"
 img_folder = data_dir + "/images"
 # file_gt = data_dir + "/OLD/1_ground_truth_2a.csv"
 # file_pred = data_dir + "/OLD/2_input_model_predictions_2.csv"
-file_gt = data_dir + "/1_ground_truth_2a.csv"
-file_pred = data_dir + "/2_input_model_predictions_2.csv"
+file_gt = data_dir + "/1_ground_truth.csv"
+file_pred = data_dir + "/2_input_model_predictions.csv"
+file_bw_pa = data_dir + "/bw_pa.csv"
 
 # Read the input CSV file
-input_raw = CSVReader(file_pred).output
+input_raw = CSVReader(file_pred, file_bw_pa).output
 images_input = Converter(input_raw).result
 
 # Import the ground truth data

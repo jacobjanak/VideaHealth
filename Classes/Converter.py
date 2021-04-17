@@ -15,7 +15,8 @@ from Classes.Box import Box
 
 class Converter:
 
-    def __init__(self, unconverted):
+    def __init__(self, unconverted, pa_bw=False):
+        self.pa_bw = pa_bw
         self.result = self.parse_image_list(unconverted)
         
 
@@ -34,7 +35,11 @@ class Converter:
         images = []
         for key, value in images_dict.items():
             boxes = self.parse_box_list(value)
-            images.append(Image(key, boxes))
+            img = None
+            if "img_type" in value:
+                img = value['img_type']
+
+            images.append(Image(key, boxes, img))
 
         return images
 

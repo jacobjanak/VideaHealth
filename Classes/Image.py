@@ -5,10 +5,11 @@ TO DO: Description
 
 class Image:
 
-    def __init__(self, id, inputBoxes = []):
+    def __init__(self, id, inputBoxes = [], img_type=None):
         self.id = id
         self.inputBoxes = inputBoxes
         self.outputBoxes = []
+        self.type = img_type
         # self.outputBoxes = self.postprocessing()
 
     def __repr__(self):
