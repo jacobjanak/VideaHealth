@@ -15,7 +15,7 @@ def get_tf_box(t):
     return [t.y1s, t.x1s, t.y2s, t.x2s]
 
 
-def nonmaximum_suppression(images, threshold, iouThreshold):
+def nonmaximum_suppression(images, threshold=0.35, iouThreshold=0.5):
     for image in images:
 
         nmsboxlist = []
