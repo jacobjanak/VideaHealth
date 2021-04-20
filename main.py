@@ -16,10 +16,11 @@ from Tests.visualizer import visualizer
 # Import teeth arrangement script to correct teeth classification
 from Scripts.teeth_arrangement import teeth_arrangements
 from Scripts.relabel import relabel
+from Scripts.missing_tooth import missing_tooth
 
 # File paths
 project_dir = os.path.dirname(os.path.abspath(__file__))
-data_dir = project_dir + "/CS410_VideaHealth_sample_data"
+data_dir = project_dir + "/CS410_VideaHealth_full_data"
 img_folder = data_dir + "/images"
 file_gt = data_dir + "/1_ground_truth.csv"
 file_pred = data_dir + "/2_input_model_predictions.csv"
@@ -45,7 +46,7 @@ images_gt = Converter(gt_raw).result
 # images_pred = best_box(images_input)
 # # teeth_arrangements(images_pred)
 # accuracy(images_pred, images_gt)
-# # visualizer('best_box', images_pred, images_gt)
+# visualizer('best_box', images_pred, images_gt)
 
 # #print("\nTesting best cluster haehn script:")
 # #from Scripts.best_cluster_haehn import best_cluster_haehn
@@ -56,18 +57,20 @@ images_gt = Converter(gt_raw).result
 # accuracy2(images_pred, images_gt)
 # # visualizer('nms', images_pred, images_gt)
 
-from Scripts.non_maximum_suppression import nonmaximum_suppression
+# from Scripts.non_maximum_suppression import nonmaximum_suppression
 
-# print("\nTesting nms script:")
-for y in range(1, 101):
-    iouThreshold = y*0.01
-    for x in range(1, 101):
-        images_input = Converter(input_raw).result
-        scoreThreshold = x*0.01
-        print(iouThreshold, scoreThreshold)
-        images_pred = nonmaximum_suppression(images_input, scoreThreshold, iouThreshold)
-        # teeth_arrangements(images_pred)
-        NMSaccuracy(images_pred, images_gt)
-        # visualizer('nms', images_pred, images_gt)
+# # print("\nTesting nms script:")
+# for y in range(1, 101):
+#     iouThreshold = y*0.01
+#     for x in range(1, 101):
+#         images_input = Converter(input_raw).result
+#         scoreThreshold = x*0.01
+#         print(iouThreshold, scoreThreshold)
+#         images_pred = nonmaximum_suppression(images_input, scoreThreshold, iouThreshold)
+#         # teeth_arrangements(images_pred)
+#         NMSaccuracy(images_pred, images_gt)
+#         # visualizer('nms', images_pred, images_gt)
+
+missing_tooth(images_gt);
 
 print()

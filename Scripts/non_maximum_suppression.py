@@ -18,12 +18,27 @@ def get_tf_box(t):
 def nonmaximum_suppression(images, threshold, iouThreshold):
     for image in images:
 
+        # Group boxes by label
+        label_dict = dict()
+        for box in image.inputBoxes:
+            if box.label in label_dict:
+                label_dict[box.label].append(box)
+            else:
+                label_dict[box.label] = [box]
+
         nmsboxlist = []
         predscorelist = []
-        for tooth in image.inputBoxes:
+        for key in label_dict:
             # nmsboxlist.append(get_nms_box(tooth))
-            nmsboxlist.append(get_tf_box(tooth))
-            predscorelist.append(tooth.score)
+            nmsboxlist.append(get_tf_box(key))
+            predscorelist.append(key.score)
+
+        # nmsboxlist = []
+        # predscorelist = []
+        # for tooth in image.inputBoxes:
+        #     # nmsboxlist.append(get_nms_box(tooth))
+        #     nmsboxlist.append(get_tf_box(tooth))
+        #     predscorelist.append(tooth.score)
 
         # best_rect = nms.boxes(nmsboxlist, predscorelist)
         best_rect = tf.image.non_max_suppression(nmsboxlist, predscorelist, max_output_size=32, score_threshold=threshold,iou_threshold=iouThreshold)
