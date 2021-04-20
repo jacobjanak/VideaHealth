@@ -10,9 +10,6 @@ from Classes.CSVWriter import CSVWriter
 
 # Import accuracy script for testing
 from Tests.accuracy import accuracy
-#from Tests.accuracy2 import accuracy2
-from Tests.NMSaccuracy import NMSaccuracy
-from Tests.accuracy2 import accuracy2
 from Tests.visualizer import visualizer
 from Tests.precision_recall import precision_recall_iou, f1_iou, precision_recall_ious, f1_ious
 
@@ -39,6 +36,9 @@ images_input = Converter(input_raw).result
 gt_raw = CSVReader(file_gt).output
 images_gt = Converter(gt_raw).result
 
+# Specifically check if you want only Bitewing (BW) or Periapical ){PA)
+images_input, images_gt = Converter.get_bw_pa(images_input, images_gt, want_bw=False)
+
 iou_threshold = 0.70
 
 ############ Test post processing scripts
@@ -58,7 +58,6 @@ images_pred = best_box(images_input)
 # teeth_arrangements(images_pred)
 #relabel(images_pred)
 accuracy(images_pred, images_gt)
-#accuracy2(images_pred, images_gt)
 print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_gt, iou_threshold)))
 print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
 # visualizer('best_box', images_pred, images_gt)
@@ -81,7 +80,7 @@ accuracy(images_pred, images_gt)
 #accuracy2(images_pred, images_gt)
 print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_gt, iou_threshold)))
 print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
-visualizer('nms', images_pred, images_gt)
+#visualizer('nms', images_pred, images_gt)
 
 print("\nTesting best cluster haehn script:")
 from Scripts.best_cluster_haehn import best_cluster_haehn
@@ -106,5 +105,8 @@ print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
 #         # teeth_arrangements(images_pred)
 #         NMSaccuracy(images_pred, images_gt)
 #         # visualizer('nms', images_pred, images_gt)
+
+
+# Looping Based upon
 
 print()

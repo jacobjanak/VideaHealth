@@ -79,3 +79,24 @@ class Converter:
                 ))
 
         return boxes
+
+    @staticmethod
+    def get_bw_pa(images_input, images_gt, want_bw):
+
+        want = 'pa'
+        if want_bw is True:
+            want = 'bw'
+
+        new_det = []
+        new_gt = []
+
+        for i in range(len(images_input)):
+            if images_input[i].type == want:
+
+                if images_input[i].id == images_gt[i].id:
+                    new_det.append(images_input[i])
+                    new_gt.append(images_gt[i])
+                else:
+                    print("Why didn't this work?")
+
+        return new_det, new_gt

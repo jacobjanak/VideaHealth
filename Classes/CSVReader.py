@@ -28,16 +28,10 @@ class CSVReader:
 
     def dataframe_to_pw(self, df):
 
-        dataset = {}
         for idx, img_id in enumerate(df["img_id"]):
-            #c = ast.literal_eval(df.iloc[idx])
-            c = df.iloc[idx]
             img_id =  df.iloc[idx]["img_id"]
             img_type = df.iloc[idx]["bw_pa"]
-            print(img_type)
             self.output[img_id]["img_type"] = img_type
-
-        return None
 
 
     def dataframe_to_dict(self, df):
