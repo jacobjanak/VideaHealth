@@ -9,6 +9,7 @@ from Classes.Box import Box
 from Classes.CSVWriter import CSVWriter
 
 # Import accuracy script for testing
+from Scripts.missing_tooth import missing_tooth
 from Tests.accuracy import accuracy
 from Tests.accuracy3 import accuracy3
 from Tests.visualizer import visualizer
@@ -38,12 +39,12 @@ gt_raw = CSVReader(file_gt).output
 images_gt = Converter(gt_raw).result
 
 # Specifically check if you want only Bitewing (BW) or Periapical ){PA)
-images_input, images_gt = Converter.get_bw_pa(images_input, images_gt, want_bw=False)
+#images_input, images_gt = Converter.get_bw_pa(images_input, images_gt, want_bw=False)
 
 iou_threshold = 0.70
 
 
-# Testing Without Filtering Detection
+# #Testing Without Filtering Detection
 # print("\nRunning stats without any Filtering")
 # #accuracy(images_input, images_gt)
 # print('precision, recall = {}'.format(precision_recall_ious(images_input, images_gt, iou_threshold)))
@@ -51,15 +52,15 @@ iou_threshold = 0.70
 # print('mAP = {}'.format(accuracy3(images_input ,images_gt)))
 
 ############ Test post processing scripts
-print("\nTesting haehn script:")
-from Scripts.haehn import haehn
-images_pred = haehn(images_input)
-# teeth_arrangements(images_pred)
-#relabel(images_pred)
-accuracy(images_pred, images_gt)
-print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_gt, iou_threshold)))
-print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
-print('mAP = {}'.format(accuracy3(images_pred,images_gt)))
+# print("\nTesting haehn script:")
+# from Scripts.haehn import haehn
+# images_pred = haehn(images_input)
+# #teeth_arrangements(images_pred)
+# #relabel(images_pred)
+# accuracy(images_pred, images_gt)
+# print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_gt, iou_threshold)))
+# print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
+# print('mAP = {}'.format(accuracy3(images_pred,images_gt)))
 
 # visualizer('haehn', images_pred, images_gt)
 
@@ -68,23 +69,45 @@ from Scripts.best_box import best_box
 images_pred = best_box(images_input)
 # teeth_arrangements(images_pred)
 #relabel(images_pred)
-accuracy(images_pred, images_gt)
+#accuracy(images_pred, images_gt)
 print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_gt, iou_threshold)))
 print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
 print('mAP = {}'.format(accuracy3(images_pred,images_gt)))
 # visualizer('best_box', images_pred, images_gt)
+#relabel(images_pred)
+#accuracy(images_pred, images_gt)
+print("Best box after Stage 2")
+images_pred = teeth_arrangements(images_pred)
+print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_gt, iou_threshold)))
+print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
+print('mAP = {}'.format(accuracy3(images_pred,images_gt)))
+images_pred = missing_tooth(images_pred)
+print("Best box after Stage 3")
+print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_gt, iou_threshold)))
+print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
+print('mAP = {}'.format(accuracy3(images_pred,images_gt)))
+
+
 
 print("\nTesting nms script:")
 from Scripts.non_maximum_suppression import nonmaximum_suppression
 images_pred = nonmaximum_suppression(images_input, threshold=0.3, iouThreshold=0.55)
-# teeth_arrangements(images_pred)
-#relabel(images_pred)
 accuracy(images_pred, images_gt)
 print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_gt, iou_threshold)))
 print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
 print('mAP = {}'.format(accuracy3(images_pred,images_gt)))
 #accuracy2(images_pred, images_gt)
 # visualizer('nms', images_pred, images_gt)
+images_pred = teeth_arrangements(images_pred)
+print("nms after Stage 2")
+print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_gt, iou_threshold)))
+print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
+print('mAP = {}'.format(accuracy3(images_pred,images_gt)))
+images_pred = missing_tooth(images_pred)
+print("nms after Stage 3")
+print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_gt, iou_threshold)))
+print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
+print('mAP = {}'.format(accuracy3(images_pred,images_gt)))
 
 print("\nTesting best cluster haehn script:")
 from Scripts.best_cluster_haehn import best_cluster_haehn
@@ -97,7 +120,16 @@ print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_
 print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
 print('mAP = {}'.format(accuracy3(images_pred,images_gt)))
 #visualizer('nms', images_pred, images_gt)
-
+images_pred = teeth_arrangements(images_pred)
+print("best cluster haehn after Stage 2")
+print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_gt, iou_threshold)))
+print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
+print('mAP = {}'.format(accuracy3(images_pred,images_gt)))
+images_pred = missing_tooth(images_pred)
+print("best cluster haehn after Stage 3")
+print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_gt, iou_threshold)))
+print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
+print('mAP = {}'.format(accuracy3(images_pred,images_gt)))
 
 
 # Tony's Magic Number Code
