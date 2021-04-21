@@ -56,7 +56,8 @@ def visualizer(script_name, images_pred, images_gt):
         # For loop of the GroundTruth Data
         for inputBox in images_gt[n].inputBoxes:
             label = 't' + inputBox.label.strip('tooth_')
-            font_scale = cal_optimal_font_scale(label, img_width)
+
+            font_scale = cal_optimal_font_scale(label, img_width, img_height)
 
             cv2.rectangle(img_gt, (inputBox.x1s + padding_x, inputBox.y1s + padding_y), (inputBox.x2s + padding_x, inputBox.y2s + padding_y), color=gt_color,
                           thickness=thickness)
@@ -126,6 +127,19 @@ def cal_optimal_font_scale(txt, rect_width):
         txt_width = text_size[0][0]
         if 0 < txt_width <= rect_width * 0.04:
             return scale/10
+    return 1
+
+def cal_optimal_font_scale(txt, rect_width, rect_height):
+    # we want the scale to be a percentage of the area
+    area = rect_width * rect_height
+    ratio = 0.05 * area
+
+    for scale in reversed(range(1, 100)):
+        (txt_width, txt_height), txt_baseline = cv2.getTextSize(txt, fontFace=cv2.FONT_HERSHEY_COMPLEX_SMALL, fontScale=scale/100, thickness=1)
+        txt_area = txt_width * txt_height
+
+        if 0 < txt_area < ratio:
+            return scale/100
     return 1
 
 

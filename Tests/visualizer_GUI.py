@@ -89,6 +89,14 @@ class ImageController(QWidget):
             self.current = int(user_input)
 
         self.image_id.emit(user_input)
+        self.img_edit.clear()
+
+    # user press a key on keyboard
+    def keyPressEvent(self, e: QtGui.QKeyEvent) -> None:
+        if e.key() == Qt.Key_Return or e.key() == Qt.Key_Enter:
+            self.show_btn_clicked()
+        else:
+            super().keyPressEvent(e)
 
 
 def show_visualizer(images):
@@ -124,7 +132,7 @@ class MainWindow(QWidget):
 
         # widgets
         self.controller = None
-        self.image_frame = QLabel()
+        self.image_frame = None
         self.controller_button = None
         self.label = None
 
@@ -156,6 +164,7 @@ class MainWindow(QWidget):
         # init image
         img = self.images[self.current - 1]
         img = img_cv2_pixmap(img)  # convert QImage to QPixmap
+        self.image_frame = QLabel()
         self.image_frame.setPixmap(img)
 
         # set image frame fit the window
