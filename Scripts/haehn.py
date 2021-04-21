@@ -59,6 +59,7 @@ def haehn(images):
                     result_box.y1s += box.y1s * dominance
                     result_box.x2s += box.x2s * dominance
                     result_box.y2s += box.y2s * dominance
+                    result_box.score = box.score # not gonna work well
 
                 # Store and return results
                 if box_meets_threshhold:
