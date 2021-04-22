@@ -11,7 +11,7 @@ from Classes.CSVWriter import CSVWriter
 # Import accuracy script for testing
 from Scripts.missing_tooth import missing_tooth
 from Tests.accuracy import accuracy
-from Tests.accuracy3 import accuracy3
+from Tests.accuracy3 import getMap
 from Tests.visualizer import visualizer
 from Tests.precision_recall import precision_recall_iou, f1_iou, precision_recall_ious, f1_ious
 
@@ -72,7 +72,7 @@ images_pred = best_box(images_input)
 #accuracy(images_pred, images_gt)
 print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_gt, iou_threshold)))
 print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
-print('mAP = {}'.format(accuracy3(images_pred,images_gt)))
+print('mAP = {}'.format(getMap(images_pred, images_gt)))
 # visualizer('best_box', images_pred, images_gt)
 #relabel(images_pred)
 #accuracy(images_pred, images_gt)
@@ -80,12 +80,12 @@ print("Best box after Stage 2")
 images_pred = teeth_arrangements(images_pred)
 print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_gt, iou_threshold)))
 print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
-print('mAP = {}'.format(accuracy3(images_pred,images_gt)))
+print('mAP = {}'.format(getMap(images_pred, images_gt)))
 images_pred = missing_tooth(images_pred)
 print("Best box after Stage 3")
 print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_gt, iou_threshold)))
 print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
-print('mAP = {}'.format(accuracy3(images_pred,images_gt)))
+print('mAP = {}'.format(getMap(images_pred, images_gt)))
 
 
 
@@ -95,19 +95,19 @@ images_pred = nonmaximum_suppression(images_input, threshold=0.3, iouThreshold=0
 accuracy(images_pred, images_gt)
 print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_gt, iou_threshold)))
 print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
-print('mAP = {}'.format(accuracy3(images_pred,images_gt)))
+print('mAP = {}'.format(getMap(images_pred, images_gt)))
 #accuracy2(images_pred, images_gt)
 # visualizer('nms', images_pred, images_gt)
 images_pred = teeth_arrangements(images_pred)
 print("nms after Stage 2")
 print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_gt, iou_threshold)))
 print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
-print('mAP = {}'.format(accuracy3(images_pred,images_gt)))
+print('mAP = {}'.format(getMap(images_pred, images_gt)))
 images_pred = missing_tooth(images_pred)
 print("nms after Stage 3")
 print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_gt, iou_threshold)))
 print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
-print('mAP = {}'.format(accuracy3(images_pred,images_gt)))
+print('mAP = {}'.format(getMap(images_pred, images_gt)))
 
 print("\nTesting best cluster haehn script:")
 from Scripts.best_cluster_haehn import best_cluster_haehn
@@ -118,18 +118,18 @@ accuracy(images_pred, images_gt)
 #accuracy2(images_pred, images_gt)
 print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_gt, iou_threshold)))
 print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
-print('mAP = {}'.format(accuracy3(images_pred,images_gt)))
+print('mAP = {}'.format(getMap(images_pred, images_gt)))
 #visualizer('nms', images_pred, images_gt)
 images_pred = teeth_arrangements(images_pred)
 print("best cluster haehn after Stage 2")
 print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_gt, iou_threshold)))
 print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
-print('mAP = {}'.format(accuracy3(images_pred,images_gt)))
+print('mAP = {}'.format(getMap(images_pred, images_gt)))
 images_pred = missing_tooth(images_pred)
 print("best cluster haehn after Stage 3")
 print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_gt, iou_threshold)))
 print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
-print('mAP = {}'.format(accuracy3(images_pred,images_gt)))
+print('mAP = {}'.format(getMap(images_pred, images_gt)))
 
 
 # Tony's Magic Number Code
