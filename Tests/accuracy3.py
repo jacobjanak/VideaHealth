@@ -11,15 +11,21 @@ def getMap(images_pred, images_gt):
     gtWriter.generate_maP_input(ground_truth=True)
 
     mainDir = os.getcwd()
+
     mapDir = mainDir + '\\Scripts\\maP'
+    # mapDir = mainDir + "/Scripts/maP"
     os.chdir(mapDir)
+
     #change directory working for said script (in order to keep it in one location)
 
     # run script with specific dataset
-    output = subprocess.run(["python main.py -na -q -mainnp"], capture_output=True)
+    # output = subprocess.run(["python main.py -na -q -mainnp"], capture_output=True, shell=True)
+    
+    os.system('python main.py -na -q -mainnp')
+
     # print(output.stdout)
-    out = str(output.stdout)[8:14]
+    # out = str(output.stdout)[8:14]
     os.chdir(mainDir)
 
-    return out
+    # return out
 
