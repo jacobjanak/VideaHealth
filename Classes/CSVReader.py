@@ -12,14 +12,13 @@ import ast
 class CSVReader:
 
     def __init__(self, path):
-        if path[-4:] != ".csv":
+        if (isinstance(path, str) and path[-4:] != ".csv") or path.suffix != ".csv":
             raise ValueError("CSV Parser can only parse files ending in .csv")
-        
+
         csv_df = pd.read_csv(path)
 
         self.path = path
         self.output = self.dataframe_to_dict(csv_df)
-
 
     def dataframe_to_dict(self, df):
         """
@@ -43,6 +42,7 @@ class CSVReader:
                 "y2s": ast.literal_eval(df.iloc[idx]["y2s"]),
             }
             if "scores" in df:
-                boxes_per_img_id[img_id]["scores"] = ast.literal_eval(df.iloc[idx]["scores"])
+                boxes_per_img_id[img_id]["scores"] = ast.literal_eval(
+                    df.iloc[idx]["scores"])
 
         return boxes_per_img_id

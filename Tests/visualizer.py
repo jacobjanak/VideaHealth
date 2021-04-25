@@ -1,18 +1,11 @@
 import numpy as np
-import cv2, os
-
-# File paths
-cur_dir = os.getcwd()
-parent_dir = os.pardir
-project_dir = os.path.dirname(os.path.join(cur_dir, parent_dir))
-data_dir = project_dir + "/CS410_VideaHealth_sample_data"
-img_folder = data_dir + "/images"
-file_gt = data_dir + "/1_ground_truth_2a.csv"
-file_pred = data_dir + "/2_input_model_predictions_2.csv"
+import cv2
+import os
 
 # This simply passes two ImageList
 
-def visualizer(script_name, images_pred, images_gt):
+
+def visualizer(img_folder, script_name, images_pred, images_gt):
     for n in range(len(images_gt)):
         # Essentially setup the GUI for this Image
         img_path = os.path.join(img_folder, (images_gt[n].id + '.png'))
@@ -48,10 +41,12 @@ def visualizer(script_name, images_pred, images_gt):
             cv2.rectangle(img_both, (inputBox.x1s, inputBox.y1s), (inputBox.x2s, inputBox.y2s), color=(100, 255, 0),
                           thickness=2)
             cv2.putText(img_gt, label,
-                        (inputBox.x1s + 10, inputBox.y1s + 30), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.5,
+                        (inputBox.x1s + 10, inputBox.y1s +
+                         30), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.5,
                         (100, 255, 0), 1, cv2.LINE_AA)
             cv2.putText(img_both, label,
-                        (inputBox.x1s + 10, inputBox.y1s + 30), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.5,
+                        (inputBox.x1s + 10, inputBox.y1s +
+                         30), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.5,
                         (100, 255, 0), 1, cv2.LINE_AA)
 
         # For Loop of the image prediction output boxes
@@ -67,19 +62,23 @@ def visualizer(script_name, images_pred, images_gt):
                           thickness=2)
 
             cv2.putText(img_pred, label,
-                        (int(outputBox.x1s) + 10, int(outputBox.y1s) + 30), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.5,
+                        (int(outputBox.x1s) + 10, int(outputBox.y1s) +
+                         30), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.5,
                         (255, 33, 0), 1, cv2.LINE_AA)
 
             cv2.putText(img_pred, score,
-                        (int(outputBox.x1s) + 10, int(outputBox.y1s) + 90), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.5,
+                        (int(outputBox.x1s) + 10, int(outputBox.y1s) +
+                         90), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.5,
                         (0, 0, 255), 1, cv2.LINE_AA)
 
             cv2.putText(img_both, label,
-                        (int(outputBox.x1s) + 10, int(outputBox.y1s) + 30), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.5,
+                        (int(outputBox.x1s) + 10, int(outputBox.y1s) +
+                         30), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.5,
                         (255, 33, 0), 1, cv2.LINE_AA)
 
             cv2.putText(img_both, score,
-                        (int(outputBox.x1s) + 10, int(outputBox.y1s) + 90), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.5,
+                        (int(outputBox.x1s) + 10, int(outputBox.y1s) +
+                         90), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.5,
                         (0, 0, 255), 1, cv2.LINE_AA)
 
         name = script_name + ': ' + images_gt[n].id
@@ -91,6 +90,7 @@ def visualizer(script_name, images_pred, images_gt):
 
 def create_blank_img(width, height, rgb_color=(0, 0, 0)):
     image = np.zeros((height, width, 3), np.uint8)  # create image
-    color = tuple(reversed(rgb_color))  # OpenCV use BGR, so we reverse the RGB tuple
+    # OpenCV use BGR, so we reverse the RGB tuple
+    color = tuple(reversed(rgb_color))
     image[:] = color  # fill this image with color
     return image
