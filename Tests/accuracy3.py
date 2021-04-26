@@ -1,4 +1,5 @@
 import os
+import shutil
 
 from Classes.TextWriter import TextWriter
 import subprocess
@@ -20,11 +21,13 @@ def getMap(images_pred, images_gt):
 
     # run script with specific dataset
     # output = subprocess.run(["python main.py -na -q -mainnp"], capture_output=True, shell=True)
-    
-    os.system('python main.py -na -q -mainnp')
+    # python main.py -na -q -mainnp
+    os.system('python main.py')
 
+    #os.rmdir(mapDir+'\\input')
     # print(output.stdout)
     # out = str(output.stdout)[8:14]
+    shutil.rmtree(mapDir+'\\input')
     os.chdir(mainDir)
 
     # return out
