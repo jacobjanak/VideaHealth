@@ -45,12 +45,12 @@ images_input, images_gt = Converter.get_bw_pa(images_input, images_gt, want_bw=F
 iou_threshold = 0.70
 
 
-#Testing Without Filtering Detection
-print("\nRunning stats without any Filtering")
-#accuracy(images_input, images_gt)
-print('precision, recall = {}'.format(precision_recall_ious(images_input, images_gt, iou_threshold)))
-print('f1 = {}'.format(f1_ious(images_input, images_gt, iou_threshold)))
-print('mAP = {}'.format(getMap(images_input ,images_gt)))
+# #Testing Without Filtering Detection
+# print("\nRunning stats without any Filtering")
+# #accuracy(images_input, images_gt)
+# print('precision, recall = {}'.format(precision_recall_ious(images_input, images_gt, iou_threshold)))
+# print('f1 = {}'.format(f1_ious(images_input, images_gt, iou_threshold)))
+# print('mAP = {}'.format(getMap(images_input ,images_gt)))
 
 ############ Test post processing scripts
 # print("\nTesting haehn script:")
