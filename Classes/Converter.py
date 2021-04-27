@@ -15,7 +15,8 @@ from Classes.Box import Box
 
 class Converter:
 
-    def __init__(self, unconverted):
+    def __init__(self, unconverted, pa_bw=False):
+        self.pa_bw = pa_bw
         self.result = self.parse_image_list(unconverted)
         
 
@@ -34,7 +35,11 @@ class Converter:
         images = []
         for key, value in images_dict.items():
             boxes = self.parse_box_list(value)
-            images.append(Image(key, boxes))
+            img = None
+            if "img_type" in value:
+                img = value['img_type']
+
+            images.append(Image(key, boxes, img))
 
         return images
 
@@ -74,3 +79,24 @@ class Converter:
                 ))
 
         return boxes
+
+    @staticmethod
+    def get_bw_pa(images_input, images_gt, want_bw):
+
+        want = 'pa'
+        if want_bw is True:
+            want = 'bw'
+
+        new_det = []
+        new_gt = []
+
+        for i in range(len(images_input)):
+            if images_input[i].type == want:
+
+                if images_input[i].id == images_gt[i].id:
+                    new_det.append(images_input[i])
+                    new_gt.append(images_gt[i])
+                else:
+                    print("Why didn't this work?")
+
+        return new_det, new_gt
