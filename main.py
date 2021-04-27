@@ -1,5 +1,7 @@
 import sys
 import os
+import pandas as pd
+from tqdm import tqdm, trange
 
 # Import classes
 from Classes.CSVReader import CSVReader
@@ -7,6 +9,7 @@ from Classes.Converter import Converter
 from Classes.Image import Image
 from Classes.Box import Box
 from Classes.CSVWriter import CSVWriter
+from Classes.Stat import Stat
 
 # Import accuracy script for testing
 from Scripts.missing_tooth import missing_tooth
@@ -23,7 +26,7 @@ from Scripts.relabel import relabel
 
 # File paths
 project_dir = os.path.dirname(os.path.abspath(__file__))
-data_dir = project_dir + "/CS410_VideaHealth_sample_data"
+data_dir = project_dir + "/CS410_VideaHealth_full_data"
 img_folder = data_dir + "/images"
 file_gt = data_dir + "/1_ground_truth.csv"
 file_pred = data_dir + "/2_input_model_predictions.csv"
@@ -85,4 +88,37 @@ print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_
 print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
 #images_gt = Converter(gt_raw).result
 
+result = []
+
+for y in tqdm(range(1, 3, 3), desc='loop1', leave=None):
+    iouThreshold = y * 0.01
+    for x in range(1, 101, 3):
+        scoreThreshold = x * 0.01
+        images_pred = nonmaximum_suppression(images_input, scoreThreshold, iouThreshold)
+        metrics = Metrics2.calculate_percision_recall_curv(images_pred, Converter(gt_raw).result)
+        perc, recall = metrics.last_percision_recall()
+        #precision, recall = precision_recall_ious(images_pred, images_gt, iou_threshold)
+        f1 = f1_ious(images_pred, images_gt, iou_threshold)
+        result.append(Stat(scoreThreshold, iouThreshold, perc, recall, f1))
+
+sorted(result, key=lambda stat: stat.f1)
+
+# print result out TODO change it to write to file
+# because there are a LOT of numbers
+# csv file time
+
+hold_data = {}
+
+index = 0
+for Stat in result:
+    hold_data[index] = {
+        "f1": Stat.f1,
+        "iou": Stat.iou,
+        "p": Stat.p,
+        "r": Stat.r,
+        "score": Stat.score,
+    }
+    index=+1
+field = pd.DataFrame.from_dict(hold_data, orient='index')
+field.to_csv(r'Tests\result.csv', index=False, header=True)
 
