@@ -16,7 +16,7 @@ file_pred = data_dir + "/2_input_model_predictions_2.csv"
 pred_color = (252, 3, 3)  # (255, 33, 0)
 pred_txt_color = (3, 3, 252)
 gt_color = (100, 255, 0)
-pred_color_fp =  (255, 238, 0)
+pred_color_fp =  (0, 98, 255)
 pred_color_tp = (252, 3, 3)
 gt_txt_color = gt_color
 
