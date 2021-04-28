@@ -134,7 +134,6 @@ def precision_recall_ious(images_pred, images_gt, iou_threshold=0.5):
 
 def f1_ious(images_pred, images_gt, iou_threshold=0.5):
     sum_precision, sum_recall = precision_recall_ious(images_pred, images_gt, iou_threshold)
-
     f1_divisor = (sum_precision + sum_recall) if (sum_precision + sum_recall) > 0 else -1
     sum_f1 = 2 * (sum_precision * sum_recall) / f1_divisor
     return sum_f1

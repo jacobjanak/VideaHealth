@@ -28,7 +28,7 @@ from Scripts.relabel import relabel
 project_dir = os.path.dirname(os.path.abspath(__file__))
 data_dir = project_dir + "/CS410_VideaHealth_full_data"
 img_folder = data_dir + "/images"
-file_gt = data_dir + "/1_ground_truth.csv"
+file_gt = data_dir + "/1_ground_truth.csv_new"
 file_pred = data_dir + "/2_input_model_predictions.csv"
 file_bw_pa = data_dir + "/bw_pa.csv"
 
@@ -90,16 +90,18 @@ print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
 
 result = []
 
-for y in tqdm(range(1, 3, 3), desc='loop1', leave=None):
+for y in tqdm(range(1, 101, 10), desc='loop1', leave=None):
     iouThreshold = y * 0.01
-    for x in range(1, 101, 3):
+    for x in range(1, 101, 10):
         scoreThreshold = x * 0.01
         images_pred = nonmaximum_suppression(images_input, scoreThreshold, iouThreshold)
         metrics = Metrics2.calculate_percision_recall_curv(images_pred, Converter(gt_raw).result)
         perc, recall = metrics.last_percision_recall()
-        #precision, recall = precision_recall_ious(images_pred, images_gt, iou_threshold)
-        f1 = f1_ious(images_pred, images_gt, iou_threshold)
-        result.append(Stat(scoreThreshold, iouThreshold, perc, recall, f1))
+        precision2, recall2 = precision_recall_ious(images_pred, images_gt, iou_threshold=0.7)
+        #2 * (precision * recall) / (precision + recall)
+        f1_dan = ((perc * recall)/(perc+recall)) * 2
+        f1_tank = f1_iou(images_pred, images_gt, iou_threshold=0.7)
+        result.append(Stat(scoreThreshold, iouThreshold, perc, recall, f1_dan, f1_tank, precision2, recall2))
 
 sorted(result, key=lambda stat: stat.f1)
 
@@ -112,13 +114,19 @@ hold_data = {}
 index = 0
 for Stat in result:
     hold_data[index] = {
-        "f1": Stat.f1,
+        "index": index,
         "iou": Stat.iou,
-        "p": Stat.p,
-        "r": Stat.r,
         "score": Stat.score,
+        "f1_dan": Stat.f1,
+        "f1_tank": Stat.f2,
+        "p_dan": Stat.p,
+        "r_dan": Stat.r,
+        "p2_tank": Stat.p2,
+        "r2_tank": Stat.r2,
+
     }
-    index=+1
+    #print(index)
+    index = index+1
+
 field = pd.DataFrame.from_dict(hold_data, orient='index')
 field.to_csv(r'Tests\result.csv', index=False, header=True)
-
