@@ -1,6 +1,0 @@
-tooth_7 35 0 55 63
-tooth_8 54 0 62 66
-tooth_6 13 0 35 58
-tooth_5 1 0 27 51
-tooth_3 0 0 6 39
-tooth_4 0 0 15 45
