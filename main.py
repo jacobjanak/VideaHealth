@@ -47,6 +47,7 @@ metrics.visualize()
 per, recal = metrics.last_percision_recall()
 print("percision={} recall={}".format(per, recal))
 
+
 images_input = Converter(input_raw).result
 images_gt = Converter(gt_raw).result
 
