@@ -74,5 +74,6 @@ metrics = Metrics2.calculate_percision_recall_curv(images_pred, images_gt)
 perc, recall = metrics.last_percision_recall()
 print(f"Metrics: percision={perc} recall={recall}")
 images_gt = Converter(gt_raw).result
+visualizer("NMS", images_pred, images_gt)
 
 

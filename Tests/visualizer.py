@@ -16,6 +16,8 @@ file_pred = data_dir + "/2_input_model_predictions_2.csv"
 pred_color = (252, 3, 3)  # (255, 33, 0)
 pred_txt_color = (3, 3, 252)
 gt_color = (100, 255, 0)
+pred_color_fp =  (255, 238, 0)
+pred_color_tp = (252, 3, 3)
 gt_txt_color = gt_color
 
 
@@ -84,13 +86,31 @@ def visualizer(script_name, images_pred, images_gt):
 
             x1, y1 = outputBox.vec1()
             x2, y2 = outputBox.vec2()
-            cv2.rectangle(img_pred, (x1 + padding_x, y1 + padding_y), (x2 + padding_x, y2 + padding_y),
-                          color=pred_color, thickness=2)
-            cv2.rectangle(img_both, (x1 + padding_x, y1 + padding_y), (x2 + padding_x, y2 + padding_y),
-                          color=pred_color, thickness=2)
+
+            # I implemented a tp fp
+            if (outputBox.tp_fp == 'TP'):
+                cv2.rectangle(img_pred, (x1 + padding_x, y1 + padding_y), (x2 + padding_x, y2 + padding_y),
+                              color=pred_color_tp, thickness=2)
+
+                cv2.rectangle(img_both, (x1 + padding_x, y1 + padding_y), (x2 + padding_x, y2 + padding_y),
+                              color=pred_color_tp, thickness=2)
+            elif outputBox.tp_fp == 'FP':
+
+                cv2.rectangle(img_pred, (x1 + padding_x, y1 + padding_y), (x2 + padding_x, y2 + padding_y),
+                              color=pred_color_fp, thickness=2)
+
+                cv2.rectangle(img_both, (x1 + padding_x, y1 + padding_y), (x2 + padding_x, y2 + padding_y),
+                              color=pred_color_fp, thickness=2)
+            else:
+                cv2.rectangle(img_pred, (x1 + padding_x, y1 + padding_y), (x2 + padding_x, y2 + padding_y),
+                              color=pred_color, thickness=2)
+
+                cv2.rectangle(img_both, (x1 + padding_x, y1 + padding_y), (x2 + padding_x, y2 + padding_y),
+                              color=pred_color, thickness=2)
 
             # add prediction tooth label
-            cv2.putText(img_pred, label, (int(outputBox.x1s) + padding_x, int(outputBox.y2s) + padding_y),
+            # I change 2nd arg from label to
+            cv2.putText(img_pred, "{} {:0.2f}".format(label, outputBox.score), (int(outputBox.x1s) + padding_x, int(outputBox.y2s) + padding_y),
                         cv2.FONT_HERSHEY_COMPLEX_SMALL, 2, pred_txt_color, 2, cv2.LINE_AA)
 
             cv2.putText(img_both, label, (int(outputBox.x1s) + padding_x, int(outputBox.y2s) + padding_y),
