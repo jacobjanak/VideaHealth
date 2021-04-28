@@ -42,47 +42,38 @@ images_gt = Converter(gt_raw).result
 
 iou_threshold = 0.70
 
-print("\nTesting without Filtering script:")
-metrics = Metrics2.calculate_percision_recall_curv(images_input, Converter(gt_raw).result)
+metrics = Metrics2.calculate_percision_recall_curv(images_input, images_gt)
 metrics.visualize()
-perc, recall = metrics.last_percision_recall()
-print(f"Metrics: percision={perc} recall={recall}")
+per, recal = metrics.last_percision_recall()
+print("percision={} recall={}".format(per, recal))
 
-images_gt = Converter(gt_raw).result
-print('precision, recall = {}'.format(precision_recall_ious(images_input, images_gt, iou_threshold)))
-print('f1 = {}'.format(f1_ious(images_input, images_gt, iou_threshold)))
-images_gt = Converter(gt_raw).result
 images_input = Converter(input_raw).result
+images_gt = Converter(gt_raw).result
 
 print("\nTesting nms script:")
 from Scripts.non_maximum_suppression import nonmaximum_suppression # threshold=0.35, iouThreshold=0.5
 images_pred = nonmaximum_suppression(images_input, threshold=0.35, iouThreshold=0.5)
-metrics = Metrics2.calculate_percision_recall_curv(images_pred, Converter(gt_raw).result)
+metrics = Metrics2.calculate_percision_recall_curv(images_pred, images_gt)
 #metrics.visualize()
 perc, recall = metrics.last_percision_recall()
 print(f"Metrics: percision={perc} recall={recall}")
-print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_gt, iou_threshold)))
-print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
-#images_gt = Converter(gt_raw).result
+images_gt = Converter(gt_raw).result
 
 print("Teeth Arrangements on NMS")
 images_pred = teeth_arrangements(images_pred)
-metrics = Metrics2.calculate_percision_recall_curv(images_pred, Converter(gt_raw).result)
+metrics = Metrics2.calculate_percision_recall_curv(images_pred, images_gt)
 #metrics.visualize()
 perc, recall = metrics.last_percision_recall()
 print(f"Metrics: percision={perc} recall={recall}")
-print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_gt, iou_threshold)))
-print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
-#images_gt = Converter(gt_raw).result
+images_gt = Converter(gt_raw).result
 
 print("Missing Tooth on NMS")
 images_pred = missing_tooth(images_pred)
-metrics = Metrics2.calculate_percision_recall_curv(images_pred, Converter(gt_raw).result)
+metrics = Metrics2.calculate_percision_recall_curv(images_pred, images_gt)
 #metrics.visualize()
 perc, recall = metrics.last_percision_recall()
 print(f"Metrics: percision={perc} recall={recall}")
-print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_gt, iou_threshold)))
-print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
-#images_gt = Converter(gt_raw).result
+images_gt = Converter(gt_raw).result
+visualizer("NMS", images_pred, images_gt)
 
 
