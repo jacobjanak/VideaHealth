@@ -4,3 +4,13 @@ __pycache__/
 .DS_Store
 VideaHealth
 /Tests/notinrepo.py
+.venv/
+.vscode/
+Classes/python/
+/Scripts/maP/input/
+/Scripts/maP/other/
+/Scripts/maP/.idea/
+/Scripts/maP/.temp_files/
+/Scripts/maP/venv/
+/CS410_VideaHealth_sample_data1/
+/CS410_VideaHealth_sample_data1/
