@@ -27,8 +27,8 @@ def visualize_clusters(clusters):
     """
     plt.figure()
     color_index = 0
-    colors = ["blue", "orange", "green", "red", "purple"]
-    print(clusters)
+    colors = ["blue", "orange", "green", "red", "purple", "cyan", "olive", "gray", "pink", "brown", "gold", "coral", "lime", "azure", "crimson", "cornflowerblue"]
+    # print(clusters)
     for cluster in clusters:
         points = convert_to_4d_array(cluster)
         # if points.shape[1] < 2:
@@ -65,11 +65,11 @@ def SSE(points):
     centroid = np.mean(points, 0)
     # errors = np.linalg.norm(points-centroid, ord=2, axis=1)
     errors = np.linalg.norm(points-centroid, ord=2)
-    print(np.sum(errors))
+    # print(np.sum(errors))
     return np.sum(errors)
 
 
-def kmeans(points, k=2, epochs=10, max_iter=100, verbose=False):
+def kmeans(points, k=12, epochs=20, max_iter=10000, verbose=True):
     """
     Clusters the list of points into `k` clusters using k-means clustering
     algorithm.
@@ -92,20 +92,15 @@ def kmeans(points, k=2, epochs=10, max_iter=100, verbose=False):
     """
     # points = convert_to_2d_array(points)
 
-    points = convert_to_4d_array([
-        [1,1,2,2],
-        [2,2,3,3],
-        [6,1,7,2],
-        [6,4,7,5],
-        [1,5,2,6],
-        [5,5,6,6],
-        [4,3,5,4],
-        [9,9,10,10],
-        [8,3,9,4]
-    ])
+    images = points
+    # print(images[0])
+    boxes = images[1].inputBoxes
 
-    print(points)
-    print("HELLO! ====================")
+    points = []
+    for box in boxes:
+        points.append([box.x1s, box.y1s, box.x2s, box.y2s])
+
+    points = convert_to_4d_array(points)
 
     assert len(points) >= k, "Number of data points can't be less than k"
 
@@ -125,6 +120,11 @@ def kmeans(points, k=2, epochs=10, max_iter=100, verbose=False):
                     clusters[index] = np.expand_dims(p, 0)
                 else:
                     clusters[index] = np.vstack((clusters[index], p))
+
+            # loop through all elements and remove None values
+            for i in range(len(clusters) - 1, -1, -1):
+                if clusters[i] is None:
+                    clusters.pop(i)
 
             # Centroid update
             centroids = [np.mean(c, 0) for c in clusters]
@@ -148,7 +148,7 @@ def kmeans(points, k=2, epochs=10, max_iter=100, verbose=False):
     return best_clusters
 
 
-def bisecting_kmeans(points, k=2, epochs=10, max_iter=100, verbose=False):
+def bisecting_kmeans(points, k=8, epochs=30, max_iter=100, verbose=False):
     """
     Clusters the list of points into `k` clusters using bisecting k-means
     clustering algorithm. Internally, it uses the standard k-means with k=2 in
@@ -170,6 +170,14 @@ def bisecting_kmeans(points, k=2, epochs=10, max_iter=100, verbose=False):
         clusters: list with size = k
             List of clusters, where each cluster is a list of data points
     """
+    images = points
+    # print(images[0])
+    boxes = images[0].inputBoxes
+
+    points = []
+    for box in boxes:
+        points.append([box.x1s, box.y1s, box.x2s, box.y2s])
+
     points = convert_to_4d_array(points)
     clusters = [points]
     while len(clusters) < k:
