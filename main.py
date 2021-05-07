@@ -96,8 +96,11 @@ print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
 from Scripts.kmeans import bisecting_kmeans, kmeans, visualize_clusters
 
 # points = np.loadtxt(datafile)
-algorithm = kmeans
-clusters = algorithm(points=images_input)
-visualize_clusters(clusters)
+images_pred = kmeans(images_input)
+print("\nTesting K Means:")
+print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_gt, iou_threshold)))
+print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
 
-# print()
+# visualize_clusters(clusters)
+
+print()
