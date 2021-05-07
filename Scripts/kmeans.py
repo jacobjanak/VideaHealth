@@ -54,7 +54,7 @@ def SSE(points):
     return np.sum(errors)
 
 
-def kmeans(images, k=32, epochs=20, max_iter=10000, verbose=False):
+def kmeans(images, k=32, epochs=20, max_iter=1000, verbose=False):
     """
     Clusters the list of points into `k` clusters using k-means clustering
     algorithm.
