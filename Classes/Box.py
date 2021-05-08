@@ -15,7 +15,7 @@ class Box:
         self.tp_fp = None
 
     def area(self):
-        return (self.x2s - self.x1s + 1) * (self.y2s - self.y1s + 1)
+        return (self.x2s - self.x1s) * (self.y2s - self.y1s)
 
     # return a tuple cointing the coordinates (x, y)
     def midpoint(self):
@@ -33,17 +33,13 @@ class Box:
         ya = max(self.y1s, box2.y1s)
         xb = min(self.x2s, box2.x2s)
         yb = min(self.y2s, box2.y2s)
-        a = max(0, xb - xa + 1)
-        b = max(0, yb - ya + 1)
-        c = a * b
-        return max(0, xb - xa + 1) * max(0, yb - ya + 1)
+        return max(0, xb - xa) * max(0, yb - ya)
 
     def union(self, box2):
         return self.area() + box2.area() - self.intersect(box2)
 
     def iou(self, box2):
-        idk = self.intersect(box2) / (self.union(box2))
-        return idk
+        return self.intersect(box2) / (self.union(box2))
 
     def vec1(self):
         return (int(self.x1s), int(self.y1s))

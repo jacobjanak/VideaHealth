@@ -5,12 +5,30 @@ from matplotlib import pyplot as plt
 
 # Thresholds
 scoreThresh = 0.3
-iouThresh = 0.5
+iouClusterThresh = 0.9
+iouCentroidThresh = 0.5
 
 
 # This function is just the caller function for kmeans_iter
 def kmeans(images, k=2):
 	assert k == 2, "Currently can only support k=2" # TEMP
+
+	from Classes.Box import Box
+	box1 = Box("", 12,12,13,13)
+	box2 = Box("", 1,1,4,4)
+
+	print(box1.area())
+	print(box2.area())
+
+	print(box1.iou(box2))
+	print(box2.iou(box1))
+
+	print(box1.intersect(box2))
+	print(box2.intersect(box1))
+
+	print(box1.union(box2))
+	print(box2.union(box1))
+
 
 	for image in images:
 		boxes = [b for b in image.inputBoxes if b.score > scoreThresh]
@@ -19,11 +37,18 @@ def kmeans(images, k=2):
 		clusters = kmeans_iter(boxes, k)
 		for i in range(5):
 			nextCluster = clusters.pop(0)
-			if len(nextCluster) > k:
-				results = kmeans_iter(nextCluster, k)
-				clusters.extend(results)
-			else:
+			if len(nextCluster) <= k:
 				finishedClusters.append(nextCluster)
+				continue
+			results = kmeans_iter(nextCluster, 2)
+
+			# create average boxes (using score??)
+			# check iou cluster thresh
+			# check if one box is inside another
+			# if ...:
+
+			clusters.extend(results)
+				
 
 		display(finishedClusters)
 			
@@ -31,8 +56,6 @@ def kmeans(images, k=2):
 
 
 def kmeans_iter(boxes, k=2):
-
-	# NOTE: fail more gracefully
 	assert len(boxes) >= k, "Number of boxes can't be less than k"
 
 	# Step 1: Pick k random centroids to start the clusters
@@ -42,7 +65,7 @@ def kmeans_iter(boxes, k=2):
 		clusters = [[c] for c in boxes[:k]]
 		# NOTE: prevent infinite loops
 		# NOTE: adapt for when k != 2
-		if clusters[0][0].iou(clusters[1][0]) < iouThresh:
+		if clusters[0][0].iou(clusters[1][0]) < iouCentroidThresh:
 			break
 
 	done = False
