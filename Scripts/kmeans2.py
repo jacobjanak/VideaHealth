@@ -12,29 +12,41 @@ from matplotlib import pyplot as plt
 # Thresholds
 scoreThresh = 0.05 			# completely ignore all boxes with lower scores
 iouClusterThresh = 0.6		# prevent clusters from overlapping
-iouCentroidThresh = 2 		# prevents centroids from overlapping NOTE change from 2
+iouCentroidThresh = 0.8 	# prevents centroids from overlapping NOTE change from 2
 totalScoreThresh = 0.5		# removes output boxes with lower total scores
 
 
 # This function is just the caller function for kmeans_iter
 def kmeans(images, k=2):
-	assert k == 2, "Currently can only support k=2" # TEMP
-
 	for image in images:
 		boxes = [b for b in image.inputBoxes if b.score > scoreThresh]
 
 		# Continuously bisect clusters until they meet a certain criteria
 		finishedClusters = []
 		clusters = kmeans_iter(boxes, k)
+		if clusters is None:
+			image.outputBoxes = image.inputBoxes
+			continue
+
 		for nextCluster in clusters:
 
 			# Break when clusters are too small
-			if len(nextCluster) <= k:
+			if len(nextCluster) == 1:
 				finishedClusters.append(nextCluster)
 				continue
 
+			# We know they're far enough apart so just split them
+			if len(nextCluster) == 2:
+				finishedClusters.append([nextCluster[0]])
+				finishedClusters.append([nextCluster[1]])
+
 			# Run K Means and check validity of results
 			results = kmeans_iter(nextCluster, 2)
+			if results is None:
+				finishedClusters.append(nextCluster)
+				continue
+
+			# Stop when the resulting clusters are too close
 			avg1 = average_box(results[0])
 			avg2 = average_box(results[1])
 			intersection = avg1.intersect(avg2)
@@ -52,7 +64,7 @@ def kmeans(images, k=2):
 		output = [average_box(c) for c in finishedClusters]
 		
 		trim_output(output)
-		display([output])
+		# display([output])
 		image.outputBoxes = output
 
 	return images
@@ -63,13 +75,50 @@ def kmeans_iter(boxes, k=2):
 
 	# Step 1: Pick k random centroids to start the clusters
 	# N
-	while True:
+	if k == 2:
+		# clusters = []
+		leftmostBox = None
+		rightMostBox = None
+		for box in boxes:
+			if leftmostBox is None or box.x1s < leftmostBox.x1s:
+				leftmostBox = box
+		for box in boxes:
+			if rightMostBox is None or box.x2s > rightMostBox.x2s:
+				if box != leftmostBox:
+					rightMostBox = box
+		if leftmostBox.iou(rightMostBox) > iouCentroidThresh:
+			topmostBox = None
+			bottommostBox = None
+			for box in boxes:
+				if topmostBox is None or box.y1s < topmostBox.y1s:
+					topmostBox = box
+			for box in boxes:
+				if bottommostBox is None or box.y2s > bottommostBox.y2s:
+					if box != topmostBox:
+						bottommostBox = box
+			if topmostBox.iou(bottommostBox) > iouCentroidThresh:
+				return None
+			clusters = [[topmostBox], [bottommostBox]]
+		else:
+			clusters = [[leftmostBox], [rightMostBox]]
+	else:
 		random.shuffle(boxes)
 		clusters = [[c] for c in boxes[:k]]
-		# NOTE: prevent infinite loops
-		# NOTE: adapt for when k != 2
-		if clusters[0][0].iou(clusters[1][0]) < iouCentroidThresh:
-			break
+		overlaps = 0
+		done = False
+		while not done:
+			for i in range(k):
+				for j in range(k):
+					if i == j: continue
+					if clusters[i][0].iou(clusters[j][0]) > iouCentroidThresh:
+						if k + overlaps >= len(boxes):
+							return None
+						clusters[i][0] = boxes[k + overlaps]
+						overlaps += 1
+						i = 0
+						break
+				if i == k - 1:
+					done = True
 
 	done = False
 	while not done:
