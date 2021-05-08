@@ -138,6 +138,7 @@ def kmeans(images, k=32, epochs=20, max_iter=1000, verbose=False):
             avgBox = Box("templabel", 0, 0, 0, 0)
             bestScore = 0
             bestLabel = ""
+            labels = dict()
             
             for box in cluster:
 
@@ -150,6 +151,14 @@ def kmeans(images, k=32, epochs=20, max_iter=1000, verbose=False):
                         and realBox.x2s == box[2]
                         and realBox.y2s == box[3]):
                         boxReference = realBox
+
+                        """
+                        if realBox.label in labels:
+                            labels[realBox.label] += realBox.score
+                        else:
+                            labels[realBox.label] = realBox.score
+                        """
+
                         if realBox.score > bestScore:
                             bestScore = realBox.score
                             bestLabel = realBox.label
@@ -161,6 +170,15 @@ def kmeans(images, k=32, epochs=20, max_iter=1000, verbose=False):
                 avgBox.x2s += box[2] * boxReference.score
                 avgBox.y2s += box[3] * boxReference.score
 
+            """
+            bestLabel = ""
+            bestScore = 0
+            for key in labels:
+                if labels[key] > bestScore:
+                    bestScore = labels[key]
+                    bestLabel = key
+            """
+            
             avgBox.label = bestLabel
 
             # Threshold is 0.4
@@ -169,8 +187,10 @@ def kmeans(images, k=32, epochs=20, max_iter=1000, verbose=False):
                 avgBox.y1s /= totalScore
                 avgBox.x2s /= totalScore
                 avgBox.y2s /= totalScore
+                avgBox.score = .5
                 outputBoxes.append(avgBox)
 
+        visualize_clusters(clusters)
         image.outputBoxes = outputBoxes
 
     return images
