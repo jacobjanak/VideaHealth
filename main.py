@@ -144,8 +144,8 @@ print(f"Metrics: percision = {perc} recall = {recall}")
 print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_gt, iou_threshold)))
 print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
 
-accuracy(images_pred, images_gt)
-accuracy2(images_pred, images_gt)
+# accuracy(images_pred, images_gt)
+# accuracy2(images_pred, images_gt)
 
 print()
 

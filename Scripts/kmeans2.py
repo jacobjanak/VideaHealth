@@ -1,56 +1,55 @@
+
+# Dependencies
 import math
 import random
 
+# Classes
+from Classes.Box import Box
+
+# Testing
 from matplotlib import pyplot as plt
 
 # Thresholds
-scoreThresh = 0.3
-iouClusterThresh = 0.9
-iouCentroidThresh = 0.5
+scoreThresh = 0.05 			# completely ignore all boxes with lower scores
+iouClusterThresh = 0.6		# prevent clusters from overlapping
+iouCentroidThresh = 2 	# prevents centroids from overlapping
 
 
 # This function is just the caller function for kmeans_iter
 def kmeans(images, k=2):
 	assert k == 2, "Currently can only support k=2" # TEMP
 
-	from Classes.Box import Box
-	box1 = Box("", 12,12,13,13)
-	box2 = Box("", 1,1,4,4)
-
-	print(box1.area())
-	print(box2.area())
-
-	print(box1.iou(box2))
-	print(box2.iou(box1))
-
-	print(box1.intersect(box2))
-	print(box2.intersect(box1))
-
-	print(box1.union(box2))
-	print(box2.union(box1))
-
-
 	for image in images:
 		boxes = [b for b in image.inputBoxes if b.score > scoreThresh]
 
+		# Continuously bisect clusters until they meet a certain criteria
 		finishedClusters = []
 		clusters = kmeans_iter(boxes, k)
-		for i in range(5):
-			nextCluster = clusters.pop(0)
+		for nextCluster in clusters:
+
+			# Break when clusters are too small
 			if len(nextCluster) <= k:
 				finishedClusters.append(nextCluster)
 				continue
+
+			# Run K Means and check validity of results
 			results = kmeans_iter(nextCluster, 2)
+			avg1 = average_box(results[0])
+			avg2 = average_box(results[1])
+			intersection = avg1.intersect(avg2)
+			if (avg1.iou(avg2) > iouClusterThresh
+				or intersection == avg1.area()
+				or intersection == avg2.area()):
+				finishedClusters.append(nextCluster)
+				continue
 
-			# create average boxes (using score??)
-			# check iou cluster thresh
-			# check if one box is inside another
-			# if ...:
-
+			# Add resulting clusters to end of list
 			clusters.extend(results)
 				
+		# display(finishedClusters)
+		image.outputBoxes = [average_box(c) for c in finishedClusters]
 
-		display(finishedClusters)
+	return images
 			
 			
 
@@ -118,6 +117,23 @@ def euclidean(box1, box2):
 	p2 = box2.midpoint()
 
 	return math.sqrt((p1[0]-p2[0])**2 + (p1[1]-p2[1])**2)
+
+
+def average_box(cluster):
+	# Return the average of all the boxes in a cluster
+	avg = Box("", 0, 0, 0, 0, 1) # TEMP score
+	totalScore = 0
+	for box in cluster:
+		totalScore += box.score
+		avg.x1s += box.x1s * box.score
+		avg.y1s += box.y1s * box.score
+		avg.x2s += box.x2s * box.score
+		avg.y2s += box.y2s * box.score
+	avg.x1s /= totalScore
+	avg.y1s /= totalScore
+	avg.x2s /= totalScore
+	avg.y2s /= totalScore
+	return avg
 
 
 def display(clusters):
