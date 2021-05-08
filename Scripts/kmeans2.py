@@ -12,7 +12,8 @@ from matplotlib import pyplot as plt
 # Thresholds
 scoreThresh = 0.05 			# completely ignore all boxes with lower scores
 iouClusterThresh = 0.6		# prevent clusters from overlapping
-iouCentroidThresh = 2 	# prevents centroids from overlapping
+iouCentroidThresh = 2 		# prevents centroids from overlapping NOTE change from 2
+totalScoreThresh = 0.5		# removes output boxes with lower total scores
 
 
 # This function is just the caller function for kmeans_iter
@@ -47,11 +48,14 @@ def kmeans(images, k=2):
 			clusters.extend(results)
 				
 		# display(finishedClusters)
-		image.outputBoxes = [average_box(c) for c in finishedClusters]
+		# NOTE before average box, trim out the bad boxes?
+		output = [average_box(c) for c in finishedClusters]
+		
+		trim_output(output)
+		display([output])
+		image.outputBoxes = output
 
 	return images
-			
-			
 
 
 def kmeans_iter(boxes, k=2):
@@ -133,7 +137,19 @@ def average_box(cluster):
 	avg.y1s /= totalScore
 	avg.x2s /= totalScore
 	avg.y2s /= totalScore
+
+	avg.totalScore = totalScore
+
 	return avg
+
+
+def trim_output(boxes):
+	for i in range(len(boxes)-1, -1, -1):
+		box = boxes[i]
+		if box.totalScore < totalScoreThresh:
+			boxes.pop(i)
+
+	return boxes
 
 
 def display(clusters):

@@ -75,17 +75,16 @@ print(f"Metrics: percision={perc} recall={recall}")
 print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_gt, iou_threshold)))
 print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
 """
-"""
+
 images_gt = Converter(gt_raw).result
 
 
 from Scripts.best_box import best_box
 print("\nTesting Best Box:")
 images_pred = best_box(images_input)
-images_pred = missing_tooth(images_pred)
-accuracy(images_pred, images_gt)
+# images_pred = missing_tooth(images_pred)
+# accuracy(images_pred, images_gt)
 accuracy2(images_pred, images_gt)
-"""
 """
 print("Teeth Arrangements on NMS")
 images_pred = teeth_arrangements(images_pred)
@@ -140,12 +139,12 @@ print("total time = " + str(end - start))
 
 metrics = Metrics2.calculate_percision_recall_curv(images_pred, Converter(gt_raw).result)
 perc, recall = metrics.last_percision_recall()
-print(f"Metrics: percision = {perc} recall = {recall}")
+# print(f"Metrics: percision = {perc} recall = {recall}")
 print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_gt, iou_threshold)))
-print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
+# print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
 
 # accuracy(images_pred, images_gt)
-# accuracy2(images_pred, images_gt)
+accuracy2(images_pred, images_gt)
 
 print()
 
