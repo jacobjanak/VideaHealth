@@ -13,21 +13,33 @@ from matplotlib import pyplot as plt
 scoreThresh = 0.05 			# completely ignore all boxes with lower scores
 iouClusterThresh = 0.6		# prevent clusters from overlapping
 iouCentroidThresh = 0.8 	# prevents centroids from overlapping NOTE change from 2
+iouOutputThresh = 0.8		# prevent output boxes from overlapping
+intersectionThresh = 0.6	# prevent output boxes from being inside eachother
 totalScoreThresh = 0.5		# removes output boxes with lower total scores
 
 
 # This function is just the caller function for kmeans_iter
-def kmeans(images, k=2):
+def kmeans(images, k=4):
 	for image in images:
 		boxes = [b for b in image.inputBoxes if b.score > scoreThresh]
-
-		# Continuously bisect clusters until they meet a certain criteria
 		finishedClusters = []
+
+		# Validate input
+		if k > len(boxes):
+			k = len(boxes)
+			if k < 2:
+				image.outputBoxes = image.inputBoxes
+				continue
+
+		# Start by clustering boxes into k groups
 		clusters = kmeans_iter(boxes, k)
 		if clusters is None:
-			image.outputBoxes = image.inputBoxes
-			continue
+			clusters = kmeans_iter(boxes, 2)
+			if clusters is None:
+				image.outputBoxes = image.inputBoxes
+				continue
 
+		# Continuously bisect clusters until they meet a certain criteria
 		for nextCluster in clusters:
 
 			# Break when clusters are too small
@@ -59,12 +71,12 @@ def kmeans(images, k=2):
 			# Add resulting clusters to end of list
 			clusters.extend(results)
 				
-		# display(finishedClusters)
+		display(finishedClusters)
 		# NOTE before average box, trim out the bad boxes?
 		output = [average_box(c) for c in finishedClusters]
 		
 		trim_output(output)
-		# display([output])
+		display([output])
 		image.outputBoxes = output
 
 	return images
@@ -76,31 +88,10 @@ def kmeans_iter(boxes, k=2):
 	# Step 1: Pick k random centroids to start the clusters
 	# N
 	if k == 2:
-		# clusters = []
-		leftmostBox = None
-		rightMostBox = None
-		for box in boxes:
-			if leftmostBox is None or box.x1s < leftmostBox.x1s:
-				leftmostBox = box
-		for box in boxes:
-			if rightMostBox is None or box.x2s > rightMostBox.x2s:
-				if box != leftmostBox:
-					rightMostBox = box
-		if leftmostBox.iou(rightMostBox) > iouCentroidThresh:
-			topmostBox = None
-			bottommostBox = None
-			for box in boxes:
-				if topmostBox is None or box.y1s < topmostBox.y1s:
-					topmostBox = box
-			for box in boxes:
-				if bottommostBox is None or box.y2s > bottommostBox.y2s:
-					if box != topmostBox:
-						bottommostBox = box
-			if topmostBox.iou(bottommostBox) > iouCentroidThresh:
-				return None
-			clusters = [[topmostBox], [bottommostBox]]
-		else:
-			clusters = [[leftmostBox], [rightMostBox]]
+		centroids = findFurthestBoxes(boxes)
+		if centroids is None:
+			return None
+		clusters = [[centroids[0]], [centroids[1]]]
 	else:
 		random.shuffle(boxes)
 		clusters = [[c] for c in boxes[:k]]
@@ -172,9 +163,40 @@ def euclidean(box1, box2):
 	return math.sqrt((p1[0]-p2[0])**2 + (p1[1]-p2[1])**2)
 
 
+def findFurthestBoxes(boxes):
+
+	# Start by checking the x axis for far away boxes
+	leftmostBox = None
+	rightMostBox = None
+	for box in boxes:
+		if leftmostBox is None or box.x1s < leftmostBox.x1s:
+			leftmostBox = box
+	for box in boxes:
+		if rightMostBox is None or box.x2s > rightMostBox.x2s:
+			if box != leftmostBox:
+				rightMostBox = box
+
+	# Backup option is to check the y axis for far away boxes
+	if leftmostBox.iou(rightMostBox) > iouCentroidThresh:
+		topmostBox = None
+		bottommostBox = None
+		for box in boxes:
+			if topmostBox is None or box.y1s < topmostBox.y1s:
+				topmostBox = box
+		for box in boxes:
+			if bottommostBox is None or box.y2s > bottommostBox.y2s:
+				if box != topmostBox:
+					bottommostBox = box
+		if topmostBox.iou(bottommostBox) > iouCentroidThresh:
+			return None
+		return [topmostBox, bottommostBox]
+	else:
+		return [leftmostBox, rightMostBox]
+
+
 def average_box(cluster):
 	# Return the average of all the boxes in a cluster
-	avg = Box("", 0, 0, 0, 0, 1) # TEMP score
+	avg = Box("", 0, 0, 0, 0, 1)
 	totalScore = 0
 	for box in cluster:
 		totalScore += box.score
@@ -188,15 +210,43 @@ def average_box(cluster):
 	avg.y2s /= totalScore
 
 	avg.totalScore = totalScore
+	avg.cluster = cluster
 
 	return avg
 
 
 def trim_output(boxes):
 	for i in range(len(boxes)-1, -1, -1):
-		box = boxes[i]
-		if box.totalScore < totalScoreThresh:
+
+		# Remove boxes with low confidence
+		if boxes[i].totalScore < totalScoreThresh:
 			boxes.pop(i)
+			continue
+
+		# Remove boxes that are inside other boxes
+		for j in range(i+1, len(boxes)):
+			if j == len(boxes):
+				break
+			if boxes[i].area() < boxes[j].area():
+				smallBoxIndx = i
+			else: 
+				smallBoxIndx = j
+			smallerArea = boxes[smallBoxIndx].area()
+			ratio = boxes[i].intersect(boxes[j]) / smallerArea
+			if ratio > intersectionThresh:
+				boxes.pop(smallBoxIndx)
+				if smallBoxIndx == j:
+					j -= 1
+				else:
+					i += 1
+
+		# Merge boxes that are too similar
+		for j in range(i+1, len(boxes)):
+			if boxes[i].iou(boxes[j]) > iouOutputThresh:				
+				boxes[i].cluster.extend(boxes[j].cluster)
+				boxes[i] = average_box(boxes[i].cluster)
+				boxes.pop(j)
+				break
 
 	return boxes
 
