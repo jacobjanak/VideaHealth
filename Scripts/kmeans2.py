@@ -10,12 +10,14 @@ from Classes.Box import Box
 from matplotlib import pyplot as plt
 
 # Thresholds
-scoreThresh = 0.05 			# completely ignore all boxes with lower scores
+scoreThresh = 0.01 			# completely ignore all boxes with lower scores
 iouClusterThresh = 0.6		# prevent clusters from overlapping
-iouCentroidThresh = 0.8 	# prevents centroids from overlapping NOTE change from 2
-iouOutputThresh = 0.8		# prevent output boxes from overlapping
+iouCentroidThresh = 0.2 	# prevents centroids from overlapping
+iouOutputThresh = 0.3		# prevent output boxes from overlapping
 intersectionThresh = 0.6	# prevent output boxes from being inside eachother
-totalScoreThresh = 0.5		# removes output boxes with lower total scores
+totalScoreThresh = 0.4		# removes output boxes with lower total scores
+xThresh = 0.05				# for removing boxes that overlap multiple boxes
+yThresh = 0.2				# for removing boxes that overlap multiple boxes
 
 
 # This function is just the caller function for kmeans_iter
@@ -71,12 +73,11 @@ def kmeans(images, k=4):
 			# Add resulting clusters to end of list
 			clusters.extend(results)
 				
-		display(finishedClusters)
-		# NOTE before average box, trim out the bad boxes?
+		# display(finishedClusters)
 		output = [average_box(c) for c in finishedClusters]
-		
 		trim_output(output)
-		display([output])
+		fix_labels(output)
+		# display([output])
 		image.outputBoxes = output
 
 	return images
@@ -198,16 +199,23 @@ def average_box(cluster):
 	# Return the average of all the boxes in a cluster
 	avg = Box("", 0, 0, 0, 0, 1)
 	totalScore = 0
+	labels = dict()
 	for box in cluster:
 		totalScore += box.score
 		avg.x1s += box.x1s * box.score
 		avg.y1s += box.y1s * box.score
 		avg.x2s += box.x2s * box.score
 		avg.y2s += box.y2s * box.score
+		if box.label in labels:
+			labels[box.label] += box.score
+		else:
+			labels[box.label] = box.score
 	avg.x1s /= totalScore
 	avg.y1s /= totalScore
 	avg.x2s /= totalScore
 	avg.y2s /= totalScore
+
+	avg.label = max(labels, key=labels.get)
 
 	avg.totalScore = totalScore
 	avg.cluster = cluster
@@ -218,15 +226,18 @@ def average_box(cluster):
 def trim_output(boxes):
 	for i in range(len(boxes)-1, -1, -1):
 
-		# Remove boxes with low confidence
-		if boxes[i].totalScore < totalScoreThresh:
-			boxes.pop(i)
-			continue
-
-		# Remove boxes that are inside other boxes
+		# Merge boxes that are too similar
 		for j in range(i+1, len(boxes)):
-			if j == len(boxes):
-				break
+			if j >= len(boxes): break
+			if boxes[i].iou(boxes[j]) > iouOutputThresh:				
+				boxes[i].cluster.extend(boxes[j].cluster)
+				boxes[i] = average_box(boxes[i].cluster)
+				boxes.pop(j)
+				j -= 1
+
+		# Remove boxes that are inside another box
+		for j in range(i+1, len(boxes)):
+			if j >= len(boxes): break
 			if boxes[i].area() < boxes[j].area():
 				smallBoxIndx = i
 			else: 
@@ -235,19 +246,69 @@ def trim_output(boxes):
 			ratio = boxes[i].intersect(boxes[j]) / smallerArea
 			if ratio > intersectionThresh:
 				boxes.pop(smallBoxIndx)
-				if smallBoxIndx == j:
-					j -= 1
+				if smallBoxIndx == j: j -= 1
+				else: break
+
+		# Remove boxes with low confidence
+		if boxes[i].totalScore < totalScoreThresh:
+			boxes.pop(i)
+			continue
+
+		# Remove boxes that are inside multiple other boxes
+		"""
+		indexOne = None
+		indexTwo = None
+		midpoint = boxes[i].midpoint()
+		width = boxes[i].x2s - boxes[i].x1s
+		height = boxes[i].y2s - boxes[i].y1s
+		for j in range(len(boxes)):
+			if ((abs(midpoint[0] - boxes[j].x1s) / width < xThresh
+				or abs(midpoint[0] - boxes[j].x2s) / width < xThresh)
+			and (abs(midpoint[1] - boxes[j].midpoint()[1]) / height < yThresh)):
+				if indexOne is None:
+					indexOne = j
 				else:
-					i += 1
+					indexTwo = j
+					for neighbor in [boxes[indexOne], boxes[indexTwo]]:
+						neighbor.cluster.append(
+							Box(
+								boxes[i].label,
+								boxes[i].x1s,
+								boxes[i].y1s,
+								boxes[i].x2s,
+								boxes[i].y2s,
+								neighbor.totalScore / 2
+							)
+						)
+					boxes[indexOne] = average_box(boxes[indexOne].cluster)
+					boxes[indexTwo] = average_box(boxes[indexTwo].cluster)
+					boxes.pop(i)
+					break
+		"""
 
-		# Merge boxes that are too similar
-		for j in range(i+1, len(boxes)):
-			if boxes[i].iou(boxes[j]) > iouOutputThresh:				
-				boxes[i].cluster.extend(boxes[j].cluster)
-				boxes[i] = average_box(boxes[i].cluster)
-				boxes.pop(j)
-				break
+	return boxes
 
+
+def fix_labels(boxes):
+	labels = dict()
+	for box in boxes:
+		if box.label in labels:
+			labels[box.label].append(box)
+		else:
+			labels[box.label] = [box]
+
+	for k in labels:
+		if len(labels[k]) > 1:
+			for i in range(1, len(labels[k])):
+				if i < len(labels[k]):
+					labels[k][i-1].cluster.extend(labels[k][i].cluster)
+					labels[k][i-1] = average_box(labels[k][i-1].cluster)
+					labels[k].pop(i)
+					i -= 1
+
+	boxes = []
+	for k in labels:
+		boxes.extend(labels[k])
 	return boxes
 
 

@@ -23,7 +23,7 @@ from Scripts.teeth_arrangement import teeth_arrangements
 
 # File paths
 project_dir = os.path.dirname(os.path.abspath(__file__))
-data_dir = project_dir + "/CS410_VideaHealth_sample_data"
+data_dir = project_dir + "/CS410_VideaHealth_full_data"
 img_folder = data_dir + "/images"
 file_gt = data_dir + "/1_ground_truth.csv"
 file_pred = data_dir + "/2_input_model_predictions.csv"
@@ -42,6 +42,8 @@ images_gt = Converter(gt_raw).result
 
 iou_threshold = 0.70
 
+import time
+
 """
 print("\nTesting without Filtering script:")
 metrics = Metrics2.calculate_percision_recall_curv(images_input, Converter(gt_raw).result)
@@ -59,31 +61,40 @@ images_input = Converter(input_raw).result
 from Tests.accuracy import accuracy
 from Tests.accuracy2 import accuracy2
 from Scripts.missing_tooth import missing_tooth
-"""
+
+
 print("\nTesting nms script:")
+
+start = time.perf_counter()
 from Scripts.non_maximum_suppression import nonmaximum_suppression # threshold=0.35, iouThreshold=0.5
 images_pred = nonmaximum_suppression(images_input, threshold=0.35, iouThreshold=0.5)
-images_pred = missing_tooth(images_pred)
-accuracy(images_pred, images_gt)
-accuracy2(images_pred, images_gt)
-"""
-"""
+end = time.perf_counter()
+print("total time = " + str(end - start))
+
+# images_pred = missing_tooth(images_pred)
+# accuracy(images_pred, images_gt)
 metrics = Metrics2.calculate_percision_recall_curv(images_pred, Converter(gt_raw).result)
 #metrics.visualize()
 perc, recall = metrics.last_percision_recall()
-print(f"Metrics: percision={perc} recall={recall}")
 print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_gt, iou_threshold)))
-print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
-"""
+accuracy2(images_pred, images_gt)
 
 images_gt = Converter(gt_raw).result
 
 
-from Scripts.best_box import best_box
 print("\nTesting Best Box:")
+
+start = time.perf_counter()
+from Scripts.best_box import best_box
 images_pred = best_box(images_input)
+end = time.perf_counter()
+
 # images_pred = missing_tooth(images_pred)
 # accuracy(images_pred, images_gt)
+metrics = Metrics2.calculate_percision_recall_curv(images_pred, Converter(gt_raw).result)
+perc, recall = metrics.last_percision_recall()
+# print(f"Metrics: percision = {perc} recall = {recall}")
+print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_gt, iou_threshold)))
 accuracy2(images_pred, images_gt)
 """
 print("Teeth Arrangements on NMS")
@@ -126,12 +137,10 @@ accuracy2(images_pred, images_gt)
 print()
 """
 
-
-from Scripts.kmeans2 import kmeans
-import time
 print("\nTesting K Means:")
 
 start = time.perf_counter()
+from Scripts.kmeans2 import kmeans
 images_pred = kmeans(images_input)
 end = time.perf_counter()
 
