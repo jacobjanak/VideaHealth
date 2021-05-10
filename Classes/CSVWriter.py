@@ -13,7 +13,6 @@ class CSVWriter:
 
     def __init__(self, image_boxes_data, in_or_out_boxes):
 
-
         self.date_frame(image_boxes_data, in_or_out_boxes)
 
     def date_frame(self, data_obj, option):
@@ -31,6 +30,7 @@ class CSVWriter:
                 y1s = []
                 x2s = []
                 y2s = []
+                score = []
 
                 for box in image.outputBoxes:
                     label.append(box.label)
@@ -38,14 +38,16 @@ class CSVWriter:
                     y1s.append(box.y1s)
                     x2s.append(box.x2s)
                     y2s.append(box.y2s)
+                    score.append(box.score)
 
                 boxes[image.id] = {
                     "img_id": image.id,
                     "labels": label,
                     "x1s": x1s,
                     "y1s": y1s,
-                    "x2s": x1s,
+                    "x2s": x2s,
                     "y2s": y2s,
+                    "score": score,
                 }
 
 
@@ -57,7 +59,7 @@ class CSVWriter:
             field = pd.DataFrame.from_dict(boxes, orient='index')
 
             # comment line blow if you do not want to see field
-            print("field", field)
+            #print("field", field)
             filename = "outputBoxes.csv"
             # change the line below to change file location
             # last \ is the file name if you want to change it
@@ -76,6 +78,7 @@ class CSVWriter:
                 y1s = []
                 x2s = []
                 y2s = []
+                score = []
 
                 for box in image.inputBoxes:
                     label.append(box.label)
@@ -83,14 +86,16 @@ class CSVWriter:
                     y1s.append(box.y1s)
                     x2s.append(box.x2s)
                     y2s.append(box.y2s)
+                    score.append(box.score)
 
                 boxes[image.id] = {
                     "img_id": image.id,
                     "labels": label,
                     "x1s": x1s,
                     "y1s": y1s,
-                    "x2s": x1s,
+                    "x2s": x2s,
                     "y2s": y2s,
+                    "score": score,
                 }
 
             if boxes == 0:

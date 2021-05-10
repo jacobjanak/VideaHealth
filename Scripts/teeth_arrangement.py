@@ -53,14 +53,14 @@ similarity_matrix = {'Upper': {('W', 'W'): 0.9, ('W', 'M'): 0.8, ('W', 'P'): 0.,
                                ,('I', 'W'): 0., ('I', 'M'): 0., ('I', 'P'): 0.3, ('I', 'Ca'): 0.5, ('I', 'I'): 0.9}}
 
 
-def teeth_arrangements(images):
+def teeth_arrangements(images,score,iou):
     imgs = []
     for image in images:
-        imgs.append(teeth_arrangement(image))
+        imgs.append(teeth_arrangement(image,score,iou))
     return imgs
 
 
-def teeth_arrangement(image):
+def teeth_arrangement(image,score,iou):
     upper_pred = []
     lower_pred = []
     upper_score = []
@@ -97,6 +97,9 @@ def teeth_arrangement(image):
         label_num = int(box.label.strip('tooth_'))
         # Upper
         if label_num in upper_teeth:
+            if upper_i >= 16:
+                upper_i = 15
+                print("hello am here haha :>")
             box.label = 'tooth_' + str(upper_teeth[upper_i])
             upper_i += 1
         # Lower

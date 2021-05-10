@@ -36,6 +36,38 @@ def map_gt_pred(image_pred, image_gt, iou_threshold=0.5):
     return gt_map_pred
 
 
+# def tp_fp_fn(image_pred, image_gt, iou_threshold=0.5):
+#     gt_map_pred = map_gt_pred(image_pred, image_gt, iou_threshold)  # { gt : preds list}
+#
+#     true_positive = 0
+#     false_positive = 0
+#     false_negative = 0
+#
+#     # counting true & false positives , false negatives
+#     for gt, preds in gt_map_pred.items():
+#         if gt != 'extra':
+#             # multiple boxes for this gt, pick 1 match, disregard the rest as false positives
+#             if len(preds) > 1:
+#                 true_positive += 1
+#                 false_positive += len(preds) - 1
+#             elif len(preds) == 1:
+#                 true_positive += 1
+#             else:  # false negative
+#                 false_negative += 1
+#
+#     # counting additional false positives
+#     extras = gt_map_pred['extra']
+#     false_positive += len(extras)
+#
+#     return true_positive, false_positive, false_negative
+
+def gt_in_preds(gt, preds):
+    for pred in preds:
+        if gt == pred.label:
+            return True
+    return False
+
+
 def tp_fp_fn(image_pred, image_gt, iou_threshold=0.5):
     gt_map_pred = map_gt_pred(image_pred, image_gt, iou_threshold)  # { gt : preds list}
 
@@ -47,10 +79,10 @@ def tp_fp_fn(image_pred, image_gt, iou_threshold=0.5):
     for gt, preds in gt_map_pred.items():
         if gt != 'extra':
             # multiple boxes for this gt, pick 1 match, disregard the rest as false positives
-            if len(preds) > 1:
+            if len(preds) > 1 and gt_in_preds(gt, preds):
                 true_positive += 1
                 false_positive += len(preds) - 1
-            elif len(preds) == 1:
+            elif len(preds) == 1 and gt_in_preds(gt, preds):
                 true_positive += 1
             else:  # false negative
                 false_negative += 1

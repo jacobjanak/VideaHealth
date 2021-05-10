@@ -9,5 +9,6 @@ class Stat:
         self.p2 = p2
         self.r2 = r2
 
+
     def __repr__(self):
         return '{} {}: precision, recall = ({}, 0.{}) f1 = {}'.format(self.score, self.iou, self.p, self.r, self.f1)
