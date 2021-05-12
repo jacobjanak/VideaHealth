@@ -43,11 +43,12 @@ images_gt = Converter(gt_raw).result
 # Specifically check if you want only Bitewing (BW) or Periapical ){PA)
 #images_input, images_gt = Converter.get_bw_pa(images_input, images_gt, want_bw=False)
 
+visualizer("raw data",images_input,images_gt)
 iou_threshold = 0.70
 
 print("\nTesting without Filtering script:")
 metrics = Metrics2.calculate_percision_recall_curv(images_input, Converter(gt_raw).result)
-metrics.visualize()
+#metrics.visualize()
 perc, recall = metrics.last_percision_recall()
 print(f"Metrics: percision={perc} recall={recall}")
 
@@ -64,7 +65,7 @@ images_pred = nonmaximum_suppression(images_input, threshold=0.38, iouThreshold=
 #CSVWriter(images_pred, 1)
 #visualizer("msn",images_pred,images_gt)
 metrics = Metrics2.calculate_percision_recall_curv(images_pred, Converter(gt_raw).result)
-metrics.visualize()
+#metrics.visualize()
 perc, recall = metrics.last_percision_recall()
 print(f"Metrics: percision={perc} recall={recall}")
 print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_gt, iou_threshold)))
@@ -75,7 +76,7 @@ print("Teeth Arrangements on NMS")
 images_pred = teeth_arrangements(images_pred,0.38,.39)
 #CSVWriter(images_pred, 1)
 metrics = Metrics2.calculate_percision_recall_curv(images_pred, Converter(gt_raw).result)
-metrics.visualize()
+#metrics.visualize()
 perc, recall = metrics.last_percision_recall()
 print(f"Metrics: percision={perc} recall={recall}")
 print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_gt, iou_threshold)))
@@ -86,12 +87,13 @@ print("Missing Tooth on NMS")
 images_pred = missing_tooth(images_pred)
 CSVWriter(images_pred, 1)
 metrics = Metrics2.calculate_percision_recall_curv(images_pred, Converter(gt_raw).result)
-metrics.visualize()
+#metrics.visualize()
 perc, recall = metrics.last_percision_recall()
 print(f"Metrics: percision={perc} recall={recall}")
 print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_gt, iou_threshold)))
 print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
 #images_gt = Converter(gt_raw).result
+visualizer("final",images_pred,images_gt)
 
 result = []
 
