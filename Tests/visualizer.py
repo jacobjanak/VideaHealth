@@ -110,6 +110,8 @@ def visualizer(script_name, images_pred, images_gt):
 
             # add prediction tooth label
             # I change 2nd arg from label to
+
+            # the '2' in args 5 and 7 increase the fontScale and thickness respectfully
             cv2.putText(img_pred, "{} {:0.2f}".format(label, outputBox.score), (int(outputBox.x1s) + padding_x, int(outputBox.y2s) + padding_y),
                         cv2.FONT_HERSHEY_COMPLEX_SMALL, 2, pred_txt_color, 2, cv2.LINE_AA)
 
