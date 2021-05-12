@@ -85,4 +85,3 @@ print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_
 print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
 #images_gt = Converter(gt_raw).result
 
-

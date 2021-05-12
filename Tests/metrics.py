@@ -246,7 +246,8 @@ class Metrics2:
                 if (passiou is False):
                     str = 'FP'
                     predictedBoundaryBox.tp_fp = str
-                    kek[predictedBoundaryBox.label].fp += 1
+                    if predictedBoundaryBox.label in kek:
+                        kek[predictedBoundaryBox.label].fp += 1
                     false_positives += 1
 
                 percision = true_positives / (true_positives + false_positives)
@@ -257,7 +258,8 @@ class Metrics2:
                 percision_list.append(percision)
                 recall_list.append(recall)
 
-                kek[predictedBoundaryBox.label].update(predictedBoundaryBox, str)
+                if predictedBoundaryBox.label in kek:
+                    kek[predictedBoundaryBox.label].update(predictedBoundaryBox, str)
 
 
 
