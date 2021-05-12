@@ -51,6 +51,9 @@ print("percision={} recall={}".format(per, recal))
 images_input = Converter(input_raw).result
 images_gt = Converter(gt_raw).result
 
+visualizer("NMS", images_input, images_gt)
+
+
 print("\nTesting nms script:")
 from Scripts.non_maximum_suppression import nonmaximum_suppression # threshold=0.35, iouThreshold=0.5
 images_pred = nonmaximum_suppression(images_input, threshold=0.38, iouThreshold=0.39)

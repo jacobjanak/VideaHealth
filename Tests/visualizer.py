@@ -166,11 +166,19 @@ def cal_optimal_font_scale(txt, rect_width, rect_height):
 
 
 def cal_blank_img_size(img_gt, img_pred):
+
+
+    if len(img_pred.outputBoxes) == 0:
+        img_pred.outputBoxes = img_pred.inputBoxes
+
+
     # calculate ground truth image size
     img_gt_x2 = max(img_gt.inputBoxes, key=lambda box: box.x2s).x2s
     img_gt_y2 = max(img_gt.inputBoxes, key=lambda box: box.y2s).y2s
 
     # calculate pred image size
+
+
     img_pred_x2 = max(img_pred.outputBoxes, key=lambda box: box.x2s).x2s
     img_pred_y2 = max(img_pred.outputBoxes, key=lambda box: box.y2s).y2s
 
