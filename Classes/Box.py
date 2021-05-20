@@ -1,5 +1,7 @@
 """
-TO DO: Description
+This class represents a box. It could be either a prediction (input) box
+or an output box. This class also contains many methods that are useful
+in our postprocessing calculations.
 """
 
 

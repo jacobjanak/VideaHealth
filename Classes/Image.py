@@ -1,5 +1,6 @@
 """
-TO DO: Description
+This class represents an image/X-Ray. It contains the input boxes
+that are given to us by the neural network as well as the resulting output boxes.
 """
 
 
