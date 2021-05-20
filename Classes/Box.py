@@ -12,6 +12,7 @@ class Box:
         self.x2s = x2
         self.y2s = y2
         self.score = score
+        self.tp_fp = None
 
     def area(self):
         return (self.x2s - self.x1s + 1) * (self.y2s - self.y1s + 1)

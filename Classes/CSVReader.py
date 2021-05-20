@@ -11,14 +11,28 @@ import ast
 
 class CSVReader:
 
-    def __init__(self, path):
-        if (isinstance(path, str) and path[-4:] != ".csv") or path.suffix != ".csv":
+    def __init__(self, path, img_type_path = None):
+        if path[-4:] != ".csv":
             raise ValueError("CSV Parser can only parse files ending in .csv")
-
+        
         csv_df = pd.read_csv(path)
 
         self.path = path
         self.output = self.dataframe_to_dict(csv_df)
+
+        if img_type_path is not None:
+            csv_df = pd.read_csv(img_type_path)
+            dataset = self.dataframe_to_pw(csv_df)
+
+            pass
+
+    def dataframe_to_pw(self, df):
+
+        for idx, img_id in enumerate(df["img_id"]):
+            img_id =  df.iloc[idx]["img_id"]
+            img_type = df.iloc[idx]["bw_pa"]
+            self.output[img_id]["img_type"] = img_type
+
 
     def dataframe_to_dict(self, df):
         """
@@ -42,7 +56,6 @@ class CSVReader:
                 "y2s": ast.literal_eval(df.iloc[idx]["y2s"]),
             }
             if "scores" in df:
-                boxes_per_img_id[img_id]["scores"] = ast.literal_eval(
-                    df.iloc[idx]["scores"])
+                boxes_per_img_id[img_id]["scores"] = ast.literal_eval(df.iloc[idx]["scores"])
 
         return boxes_per_img_id
