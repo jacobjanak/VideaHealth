@@ -54,7 +54,6 @@ print('f1 = {}'.format(f1_ious(images_input, images_gt, iou_threshold)))
 images_gt = Converter(gt_raw).result
 images_input = Converter(input_raw).result
 
-"""
 print("\nTesting nms script:")
 from Scripts.non_maximum_suppression import nonmaximum_suppression # threshold=0.35, iouThreshold=0.5
 images_pred = nonmaximum_suppression(images_input, threshold=0.35, iouThreshold=0.5)
@@ -85,8 +84,4 @@ print(f"Metrics: percision={perc} recall={recall}")
 print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_gt, iou_threshold)))
 print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
 #images_gt = Converter(gt_raw).result
-"""
 
-from Scripts.kmeans2 import kmeans
-
-images_pred = kmeans(images_input)
