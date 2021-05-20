@@ -1,7 +1,7 @@
 import sys
 import os
 from argparse import ArgumentParser
-from pathlib import PurePath
+from pathlib import PurePath, Path
 
 # Import classes
 from Classes.CSVReader import CSVReader
@@ -57,9 +57,8 @@ if args.predictions:
 else:
     file_pred = data_dir / "2_input_model_predictions_2.csv"
 
-
-if args.bw_pa:
-    file_pred = current_dir / args.bw_pa
+if args.imgtype:
+    file_bw_pa = current_dir / args.imgtype
 else:
     file_bw_pa = data_dir / "bw_pa.csv"
 
