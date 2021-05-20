@@ -12,6 +12,9 @@ import ast
 class CSVReader:
 
     def __init__(self, path, img_type_path = None):
+        print(path)
+        #print(path[-4:])
+        path = str(path)
         if path[-4:] != ".csv":
             raise ValueError("CSV Parser can only parse files ending in .csv")
         
@@ -31,7 +34,8 @@ class CSVReader:
         for idx, img_id in enumerate(df["img_id"]):
             img_id =  df.iloc[idx]["img_id"]
             img_type = df.iloc[idx]["bw_pa"]
-            self.output[img_id]["img_type"] = img_type
+            if (img_id in self.output):
+                self.output[img_id]["img_type"] = img_type
 
 
     def dataframe_to_dict(self, df):

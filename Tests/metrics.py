@@ -246,6 +246,9 @@ class Metrics2:
                 if (passiou is False):
                     str = 'FP'
                     predictedBoundaryBox.tp_fp = str
+                    if predictedBoundaryBox.label not in kek:
+                        kek[predictedBoundaryBox.label] = info_label(predictedBoundaryBox.label, 0, 0, 1)
+
                     kek[predictedBoundaryBox.label].fp += 1
                     false_positives += 1
 
