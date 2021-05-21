@@ -25,7 +25,7 @@ class CSVWriter:
             # does outboxBoxes
 
             for image in data_obj:
-
+                score = []
                 label = []
                 x1s = []
                 y1s = []
@@ -38,14 +38,16 @@ class CSVWriter:
                     y1s.append(box.y1s)
                     x2s.append(box.x2s)
                     y2s.append(box.y2s)
+                    score.append(box.score)
 
                 boxes[image.id] = {
                     "img_id": image.id,
                     "labels": label,
                     "x1s": x1s,
                     "y1s": y1s,
-                    "x2s": x1s,
+                    "x2s": x2s,
                     "y2s": y2s,
+                    "score": score,
                 }
 
 
@@ -70,7 +72,7 @@ class CSVWriter:
             # does inputBoxes
 
             for image in data_obj:
-
+                score = []
                 label = []
                 x1s = []
                 y1s = []
@@ -83,6 +85,7 @@ class CSVWriter:
                     y1s.append(box.y1s)
                     x2s.append(box.x2s)
                     y2s.append(box.y2s)
+                    score.append(box.score)
 
                 boxes[image.id] = {
                     "img_id": image.id,
@@ -91,6 +94,7 @@ class CSVWriter:
                     "y1s": y1s,
                     "x2s": x1s,
                     "y2s": y2s,
+                    "score": score,
                 }
 
             if boxes == 0:
