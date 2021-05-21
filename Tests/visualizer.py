@@ -5,7 +5,7 @@ import cv2, os
 cur_dir = os.getcwd()
 parent_dir = os.pardir
 project_dir = os.path.dirname(os.path.join(cur_dir, parent_dir))
-data_dir = project_dir + "/CS410_VideaHealth_sample_data"
+data_dir = project_dir + "/CS410_VideaHealth_full_data"
 img_folder = data_dir + "/images"
 file_gt = data_dir + "/1_ground_truth_2a.csv"
 file_pred = data_dir + "/2_input_model_predictions_2.csv"
