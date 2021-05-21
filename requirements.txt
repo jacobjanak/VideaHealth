@@ -1,0 +1,7 @@
+tensorflow==2.5.0rc3
+numpy==1.19.5
+pandas==1.2.3
+opencv_python==4.5.1.48
+matplotlib==3.4.1
+nms==0.1.6
+tqdm==4.60.0
