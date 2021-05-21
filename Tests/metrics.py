@@ -176,7 +176,7 @@ class Metrics2:
         pass
 
     @classmethod
-    def calculate_percision_recall_curv(cls, images_pred, images_gt, iou_threshold=0.7):
+    def calculate_percision_recall_curv(cls, images_pred, images_gt, iou_threshold=0.6):
 
         bbox_list = []
         tp_fp_list = []
