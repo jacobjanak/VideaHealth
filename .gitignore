@@ -17,3 +17,8 @@ Classes/python/
 /Scripts/maP/venv/
 /CS410_VideaHealth_sample_data1/
 /CS410_VideaHealth_sample_data1/
+/input/1_ground_truth.csv
+/input/1_ground_truth_2a.csv
+/input/2_input_model_predictions.csv
+/input/2_input_model_predictions_2.csv
+/input/bw_pa.csv

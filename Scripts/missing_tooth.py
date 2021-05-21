@@ -61,7 +61,7 @@ def missing_tooth(images_pred):
             number_of_missing_teeth = 0
 
             for j, box in enumerate(upper_pred):
-                teeth_gap = ((oldX2 - oldX1) + (upper_pred[j].x2s - upper_pred[j].x1s))/1
+                teeth_gap = ((oldX2 - oldX1) + (upper_pred[j].x2s - upper_pred[j].x1s))/3
                 if(isMissingTeeth):
                     label_num = int(box.label.strip('tooth_')) + number_of_missing_teeth
                     upper_pred[j].label = "tooth_" + str(label_num)
@@ -88,7 +88,7 @@ def missing_tooth(images_pred):
             number_of_missing_teeth = 0
 
             for j, box in enumerate(lower_pred):
-                teeth_gap = ((oldX2 - oldX1) + (lower_pred[j].x2s - lower_pred[j].x1s))/1
+                teeth_gap = ((oldX2 - oldX1) + (lower_pred[j].x2s - lower_pred[j].x1s))/3
                 if(isMissingTeeth):
                     label_num = int(box.label.strip('tooth_')) + number_of_missing_teeth
                     lower_pred[j].label = "tooth_" + str(label_num)

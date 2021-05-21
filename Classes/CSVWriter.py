@@ -11,16 +11,14 @@ class CSVWriter:
     # example 1 is outputBoxes
     # 2 is inputBoxes
 
-    def __init__(self, image_boxes_data, in_or_out_boxes):
+    def __init__(self, image_boxes_data, filename=None, in_or_out_boxes=True, debug=False):
+        self.date_frame(image_boxes_data, in_or_out_boxes, debug)
 
-
-        self.date_frame(image_boxes_data, in_or_out_boxes)
-
-    def date_frame(self, data_obj, option):
+    def date_frame(self, data_obj, option, debug):
 
         boxes = {}
 
-        if option == 1:
+        if option:
 
             # does outboxBoxes
 
@@ -59,13 +57,17 @@ class CSVWriter:
             field = pd.DataFrame.from_dict(boxes, orient='index')
 
             # comment line blow if you do not want to see field
-            print("field", field)
+
+            if debug:
+                print("field", field)
             filename = "outputBoxes.csv"
             # change the line below to change file location
             # last \ is the file name if you want to change it
-            field.to_csv(r'Tests\outputBoxes.csv',
+
+            field.to_csv(r'output\outputBoxes.csv',
                          index=False, header=True)
-            print("\n done filename is: " + filename)
+            if debug:
+                print("\n done filename is: " + filename)
 
         else:
 
@@ -97,8 +99,9 @@ class CSVWriter:
                     "score": score,
                 }
 
-            if boxes == 0:
-                print("\n boxes are empty ......")
+            if debug:
+                if boxes == 0:
+                    print("\n boxes are empty ......")
 
             #print("boxes", boxes)
             filename = "inputBoxes.csv"
@@ -110,7 +113,7 @@ class CSVWriter:
 
             # change the line below to change file location
             # last \ is the file name if you want to change it
-            field.to_csv(r'Tests\inputBoxes.csv',
+            field.to_csv(r'output\inputBoxes.csv',
                          index=False, header=True)
             print("\n done filename is: " + filename)
 
