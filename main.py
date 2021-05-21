@@ -1,5 +1,7 @@
 import sys
 import os
+from argparse import ArgumentParser
+from pathlib import PurePath, Path
 
 # Import classes
 from Classes.CSVReader import CSVReader
@@ -21,13 +23,44 @@ from Scripts.teeth_arrangement import teeth_arrangements
 #from Scripts.relabel import relabel
 from Scripts.relabel import relabel
 
+parser = ArgumentParser(
+    description="Postprocessing/filtering for tooth detection results")
+parser.add_argument("-d", "--data", help="data directory")
+parser.add_argument("-i", "--img", help="image directory")
+parser.add_argument("-g", "--ground-truth",
+                    dest="groundtruth", help="ground truth data")
+parser.add_argument("-p", "--predictions", help="prediction data")
+parser.add_argument("--iou", dest="threshold", help="IoU threshold")
+parser.add_argument("-b", "--imgtype", help="")
+args = parser.parse_args()
+
 # File paths
-project_dir = os.path.dirname(os.path.abspath(__file__))
-data_dir = project_dir + "/CS410_VideaHealth_sample_data"
-img_folder = data_dir + "/images"
-file_gt = data_dir + "/1_ground_truth.csv"
-file_pred = data_dir + "/2_input_model_predictions.csv"
-file_bw_pa = data_dir + "/bw_pa.csv"
+project_dir = Path(__file__).parent.absolute()
+current_dir = Path.cwd()
+if args.data:
+    data_dir = current_dir / args.data
+else:
+    data_dir = project_dir / "CS410_VideaHealth_sample_data"
+
+if args.img:
+    img_folder = current_dir / args.img
+else:
+    img_folder = str(data_dir / "images")
+
+if args.groundtruth:
+    file_gt = current_dir / args.groundtruth
+else:
+    file_gt = str(data_dir / "1_ground_truth.csv")
+
+if args.predictions:
+    file_pred = current_dir / args.predictions
+else:
+    file_pred = str(data_dir / "2_input_model_predictions.csv")
+
+if args.imgtype:
+    file_bw_pa = current_dir / args.imgtype
+else:
+    file_bw_pa = str(data_dir / "bw_pa.csv")
 
 # Read the input CSV file
 input_raw = CSVReader(file_pred, file_bw_pa).output
@@ -56,7 +89,7 @@ images_input = Converter(input_raw).result
 
 print("\nTesting nms script:")
 from Scripts.non_maximum_suppression import nonmaximum_suppression # threshold=0.35, iouThreshold=0.5
-images_pred = nonmaximum_suppression(images_input, threshold=0.35, iouThreshold=0.5)
+images_pred = nonmaximum_suppression(images_input, threshold=0.38, iouThreshold=0.39)
 metrics = Metrics2.calculate_percision_recall_curv(images_pred, Converter(gt_raw).result)
 #metrics.visualize()
 perc, recall = metrics.last_percision_recall()

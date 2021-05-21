@@ -1,3 +1,6 @@
+.mypy_cache
+*.zip
+__MACOSX
 CS410_VideaHealth_sample_data/
 CS410_VideaHealth_full_data/
 __pycache__/
