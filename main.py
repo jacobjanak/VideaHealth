@@ -45,22 +45,22 @@ else:
 if args.img:
     img_folder = current_dir / args.img
 else:
-    img_folder = data_dir / "images"
+    img_folder = str(data_dir / "images")
 
 if args.groundtruth:
     file_gt = current_dir / args.groundtruth
 else:
-    file_gt = data_dir / "1_ground_truth_2a.csv"
+    file_gt = str(data_dir / "1_ground_truth.csv")
 
 if args.predictions:
     file_pred = current_dir / args.predictions
 else:
-    file_pred = data_dir / "2_input_model_predictions_2.csv"
+    file_pred = str(data_dir / "2_input_model_predictions.csv")
 
 if args.imgtype:
     file_bw_pa = current_dir / args.imgtype
 else:
-    file_bw_pa = data_dir / "bw_pa.csv"
+    file_bw_pa = str(data_dir / "bw_pa.csv")
 
 # Read the input CSV file
 input_raw = CSVReader(file_pred, file_bw_pa).output
