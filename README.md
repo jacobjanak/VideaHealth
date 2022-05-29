@@ -12,16 +12,18 @@ In the above image, you can see that there are far too many boxes for the number
 
 [Image of refined data]()
 
-Our results were good, achieving both a precision and recall of about 0.79. We used a non-maximum suppression algorithm to correctly output the boxes. Non-maximum suppression is a common technique to filter the predictions of object detectors. We also wrote a seperate algorithm to assign the correct numbers to each tooth according to this chart:
+We used a non-maximum suppression algorithm to correctly output the boxes. Non-maximum suppression is a common technique to filter the predictions of object detectors. We also wrote a seperate algorithm to assign the correct numbers to each tooth. We had to work around edge cases for people with missing teeth or other irregularities. This chart shows how teeth should be numbered:
 
 [Teeth chart]()
 
+Our results were good, achieving both a precision, recall, and f1 of about 0.95. Precision is defined by the number of good boxes divided by the number of total boxes. Precision shows how trustworthy each of our outputted boxes are. Recall is defined by the number of good boxes divided by the number of good boxes plus the number of missed boxes. Recall shows how many boxes are missing in our output. The goal of object detection is to balance precision and recall to get the best results. We were able to calculate these numbers by comparing our results to the ground truth data. The ground truth was determined by an actual dentist. The fact that our results were so close to the dentist's results is promising.
 
-
-
-
-
-
-#### Setup instructions to run main.py
-1. Install the dependencies<br /><br />
+#### How to use
+1. Install the dependencies<br />
 <code>pip install -r requirements.txt</code>
+
+2. Run the main file<br />
+<code>python main.py</code>
+
+3. To see the visualizer, add the command line argument -V or --visualize<br />
+<code>python main.py -V</code>
