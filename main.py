@@ -13,14 +13,12 @@ from Classes.CSVWriter import CSVWriter
 # Import accuracy script for testing
 from Scripts.missing_tooth import missing_tooth
 from Tests.accuracy import accuracy
-#from Tests.accuracy3 import getMap
 from Tests.metrics import Metrics, Metrics2
 from Tests.visualizer import visualizer
 from Tests.precision_recall import precision_recall_iou, f1_iou, precision_recall_ious, f1_ious
 
 # Import teeth arrangement script to correct teeth classification
 from Scripts.teeth_arrangement import teeth_arrangements
-#from Scripts.relabel import relabel
 from Scripts.relabel import relabel
 
 parser = ArgumentParser(
@@ -37,30 +35,11 @@ args = parser.parse_args()
 # File paths
 project_dir = Path(__file__).parent.absolute()
 current_dir = Path.cwd()
-if args.data:
-    data_dir = current_dir / args.data
-else:
-    data_dir = project_dir / "CS410_VideaHealth_sample_data"
-
-if args.img:
-    img_folder = current_dir / args.img
-else:
-    img_folder = str(data_dir / "images")
-
-if args.groundtruth:
-    file_gt = current_dir / args.groundtruth
-else:
-    file_gt = str(data_dir / "1_ground_truth.csv")
-
-if args.predictions:
-    file_pred = current_dir / args.predictions
-else:
-    file_pred = str(data_dir / "2_input_model_predictions.csv")
-
-if args.imgtype:
-    file_bw_pa = current_dir / args.imgtype
-else:
-    file_bw_pa = str(data_dir / "bw_pa.csv")
+data_dir = project_dir / "CS410_VideaHealth_sample_data"
+img_folder = str(data_dir / "images")
+file_gt = str(data_dir / "1_ground_truth.csv")
+file_pred = str(data_dir / "2_input_model_predictions.csv")
+file_bw_pa = str(data_dir / "bw_pa.csv")
 
 # Read the input CSV file
 input_raw = CSVReader(file_pred, file_bw_pa).output
@@ -76,10 +55,10 @@ images_gt = Converter(gt_raw).result
 iou_threshold = 0.70
 
 print("\nTesting without Filtering script:")
-metrics = Metrics2.calculate_percision_recall_curv(images_input, Converter(gt_raw).result)
-metrics.visualize()
-perc, recall = metrics.last_percision_recall()
-print(f"Metrics: percision={perc} recall={recall}")
+# metrics = Metrics2.calculate_percision_recall_curv(images_input, Converter(gt_raw).result)
+# metrics.visualize()
+# perc, recall = metrics.last_percision_recall()
+# print(f"Metrics: percision={perc} recall={recall}")
 
 images_gt = Converter(gt_raw).result
 print('precision, recall = {}'.format(precision_recall_ious(images_input, images_gt, iou_threshold)))
@@ -90,31 +69,33 @@ images_input = Converter(input_raw).result
 print("\nTesting nms script:")
 from Scripts.non_maximum_suppression import nonmaximum_suppression # threshold=0.35, iouThreshold=0.5
 images_pred = nonmaximum_suppression(images_input, threshold=0.38, iouThreshold=0.39)
-metrics = Metrics2.calculate_percision_recall_curv(images_pred, Converter(gt_raw).result)
-#metrics.visualize()
-perc, recall = metrics.last_percision_recall()
-print(f"Metrics: percision={perc} recall={recall}")
+# metrics = Metrics2.calculate_percision_recall_curv(images_pred, Converter(gt_raw).result)
+# metrics.visualize()
+# perc, recall = metrics.last_percision_recall()
+# print(f"Metrics: percision={perc} recall={recall}")
 print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_gt, iou_threshold)))
 print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
 #images_gt = Converter(gt_raw).result
 
-print("Teeth Arrangements on NMS")
+visualizer(img_folder, "NMS", images_pred, images_gt)
+
+print("\nTeeth Arrangements on NMS")
 images_pred = teeth_arrangements(images_pred)
-metrics = Metrics2.calculate_percision_recall_curv(images_pred, Converter(gt_raw).result)
+# metrics = Metrics2.calculate_percision_recall_curv(images_pred, Converter(gt_raw).result)
 #metrics.visualize()
-perc, recall = metrics.last_percision_recall()
-print(f"Metrics: percision={perc} recall={recall}")
+# perc, recall = metrics.last_percision_recall()
+# print(f"Metrics: percision={perc} recall={recall}")
 print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_gt, iou_threshold)))
 print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
 #images_gt = Converter(gt_raw).result
 
-print("Missing Tooth on NMS")
+print("\nMissing Tooth on NMS")
 images_pred = missing_tooth(images_pred)
-metrics = Metrics2.calculate_percision_recall_curv(images_pred, Converter(gt_raw).result)
+# metrics = Metrics2.calculate_percision_recall_curv(images_pred, Converter(gt_raw).result)
 #metrics.visualize()
-perc, recall = metrics.last_percision_recall()
-print(f"Metrics: percision={perc} recall={recall}")
+# perc, recall = metrics.last_percision_recall()
+# print(f"Metrics: percision={perc} recall={recall}")
 print('precision, recall = {}'.format(precision_recall_ious(images_pred, images_gt, iou_threshold)))
-print('f1 = {}'.format(f1_ious(images_pred, images_gt, iou_threshold)))
+print('f1 = {}\n'.format(f1_ious(images_pred, images_gt, iou_threshold)))
 #images_gt = Converter(gt_raw).result
 
