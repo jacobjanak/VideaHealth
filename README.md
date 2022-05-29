@@ -12,7 +12,7 @@ In the above image, you can see that there are far too many boxes for the number
 
 [Image of refined data]()
 
-Our results were quite good, achieving both a precision and recall of about 0.79. We used a non-maximum suppression algorithm to correctly output the boxes. Non-maximum suppression is a technique to filter the predictions of object detectors. We also wrote a seperate algorithm to assign the correct numbers to each tooth according to this chart:
+Our results were good, achieving both a precision and recall of about 0.79. We used a non-maximum suppression algorithm to correctly output the boxes. Non-maximum suppression is a common technique to filter the predictions of object detectors. We also wrote a seperate algorithm to assign the correct numbers to each tooth according to this chart:
 
 [Teeth chart]()
 
