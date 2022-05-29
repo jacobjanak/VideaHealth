@@ -12,8 +12,6 @@ import ast
 class CSVReader:
 
     def __init__(self, path, img_type_path = None):
-        print(path)
-        #print(path[-4:])
         path = str(path)
         if path[-4:] != ".csv":
             raise ValueError("CSV Parser can only parse files ending in .csv")

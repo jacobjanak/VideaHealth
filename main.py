@@ -23,10 +23,6 @@ from Tests.precision_recall import precision_recall_iou, f1_iou, precision_recal
 from Tests.visualizer import visualizer
 
 
-
-
-
-
 # Command line arguments
 parser = ArgumentParser()
 parser.add_argument("-V", "--visualize", action="store_true", help="Visualize the data")
@@ -35,7 +31,7 @@ args = parser.parse_args()
 # File paths
 project_dir = Path(__file__).parent.absolute()
 current_dir = Path.cwd()
-data_dir = project_dir / "CS410_VideaHealth_sample_data"
+data_dir = project_dir / "Sample_Data"
 img_folder = str(data_dir / "images")
 file_gt = str(data_dir / "1_ground_truth.csv")
 file_pred = str(data_dir / "2_input_model_predictions.csv")
@@ -49,7 +45,7 @@ images_input = Converter(input_raw).result
 gt_raw = CSVReader(file_gt).output
 images_gt = Converter(gt_raw).result
 
-iou_threshold = 0.39
+iou_threshold = 0.7
 
 print("\nTesting Without Script:")
 (precision, recall) = precision_recall_ious(images_input, images_gt)
@@ -59,25 +55,7 @@ images_gt = Converter(gt_raw).result
 images_input = Converter(input_raw).result
 
 print("\nTesting NMS script:")
-images_pred = nonmaximum_suppression(images_input, iou_threshold, iou_threshold)
-(precision, recall) = precision_recall_ious(images_pred, images_gt, iou_threshold)
-print('precision, recall = {}'.format((precision, recall)))
-print('f1 = {}'.format(f1_ious(precision, recall)))
-
-print("\nTeeth Arrangements on NMS")
-images_pred = teeth_arrangements(images_pred)
-(precision, recall) = precision_recall_ious(images_pred, images_gt, iou_threshold)
-print('precision, recall = {}'.format((precision, recall)))
-print('f1 = {}'.format(f1_ious(precision, recall)))
-
-print("\nMissing Tooth on NMS")
-images_pred = missing_tooth(images_pred)
-(precision, recall) = precision_recall_ious(images_pred, images_gt, iou_threshold)
-print('precision, recall = {}'.format((precision, recall)))
-print('f1 = {}'.format(f1_ious(precision, recall)))
-
-print("\nRelabel on NMS")
-images_pred = relabel(images_pred)
+images_pred = nonmaximum_suppression(images_input, threshold=0.38, iouThreshold=0.39)
 (precision, recall) = precision_recall_ious(images_pred, images_gt, iou_threshold)
 print('precision, recall = {}'.format((precision, recall)))
 print('f1 = {}\n'.format(f1_ious(precision, recall)))

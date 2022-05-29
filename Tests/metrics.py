@@ -181,7 +181,7 @@ class Metrics2:
         percision_list = []
         recall_list = []
 
-        kek = dict()
+        imgdict = dict()
 
         # put them in tuple (rank, fp/tp, percision, recall, interporlation(will considerlater))
         false_positives = 0
@@ -191,12 +191,12 @@ class Metrics2:
         # Gives of len of all of the Ground Truth BoundaryBoxes in dataset
         for gt in images_gt:
             for gtbox in gt.inputBoxes:
-                if gtbox.label in kek:
+                if gtbox.label in imgdict:
                     false_negatives +=1
-                    kek[gtbox.label].fn +=1
+                    imgdict[gtbox.label].fn +=1
                 else:
                     false_negatives+=1
-                    kek[gtbox.label] = info_label(gtbox.label, 0, 0, 1)
+                    imgdict[gtbox.label] = info_label(gtbox.label, 0, 0, 1)
 
 
         # needed to evaluate, but potentially not really
@@ -230,8 +230,8 @@ class Metrics2:
                         # We remove so other BoundaryBox can't find it as a TP
                         gt.remove(groundtruthBoundaryBox)
                         #we have
-                        kek[predictedBoundaryBox.label].tp+=1
-                        kek[predictedBoundaryBox.label].fn-=1
+                        imgdict[predictedBoundaryBox.label].tp+=1
+                        imgdict[predictedBoundaryBox.label].fn-=1
 
                         true_positives+=1
                         false_negatives-=1
@@ -244,8 +244,8 @@ class Metrics2:
                 if (passiou is False):
                     str = 'FP'
                     predictedBoundaryBox.tp_fp = str
-                    if predictedBoundaryBox.label in kek:
-                        kek[predictedBoundaryBox.label].fp += 1
+                    if predictedBoundaryBox.label in imgdict:
+                        imgdict[predictedBoundaryBox.label].fp += 1
                     false_positives += 1
 
                 percision = true_positives / (true_positives + false_positives)
@@ -256,14 +256,14 @@ class Metrics2:
                 percision_list.append(percision)
                 recall_list.append(recall)
 
-                if predictedBoundaryBox.label in kek:
-                    kek[predictedBoundaryBox.label].update(predictedBoundaryBox, str)
+                if predictedBoundaryBox.label in imgdict:
+                    imgdict[predictedBoundaryBox.label].update(predictedBoundaryBox, str)
 
 
 
                 #data.append((predictedBoundaryBox, str, percision, recall))
 
-        return cls(bbox_list, tp_fp_list, percision_list, recall_list, kek)
+        return cls(bbox_list, tp_fp_list, percision_list, recall_list, imgdict)
 
 
 class Metrics3:
@@ -316,7 +316,7 @@ class Metrics3:
         percision_list = []
         recall_list = []
 
-        kek = dict()
+        imgdict = dict()
 
         # put them in tuple (rank, fp/tp, percision, recall, interporlation(will considerlater))
         false_positives = 0
@@ -326,12 +326,12 @@ class Metrics3:
         # Gives of len of all of the Ground Truth BoundaryBoxes in dataset
         for gt in images_gt:
             for gtbox in gt.inputBoxes:
-                if gtbox.label in kek:
+                if gtbox.label in imgdict:
                     false_negatives +=1
-                    kek[gtbox.label].fn +=1
+                    imgdict[gtbox.label].fn +=1
                 else:
                     false_negatives+=1
-                    kek[gtbox.label] = info_label(gtbox.label, 0, 0, 1)
+                    imgdict[gtbox.label] = info_label(gtbox.label, 0, 0, 1)
 
 
         # needed to evaluate, but potentially not really
@@ -365,8 +365,8 @@ class Metrics3:
                         # We remove so other BoundaryBox can't find it as a TP
                         gt.remove(groundtruthBoundaryBox)
                         #we have
-                        kek[predictedBoundaryBox.label].tp+=1
-                        kek[predictedBoundaryBox.label].fn-=1
+                        imgdict[predictedBoundaryBox.label].tp+=1
+                        imgdict[predictedBoundaryBox.label].fn-=1
 
                         true_positives+=1
                         false_negatives-=1
@@ -379,8 +379,8 @@ class Metrics3:
                 if (passiou is False):
                     str = 'FP'
                     predictedBoundaryBox.tp_fp = str
-                    if predictedBoundaryBox.label in kek:
-                        kek[predictedBoundaryBox.label].fp += 1
+                    if predictedBoundaryBox.label in imgdict:
+                        imgdict[predictedBoundaryBox.label].fp += 1
                     false_positives += 1
 
                 percision = true_positives / (true_positives + false_positives)
@@ -391,14 +391,14 @@ class Metrics3:
                 percision_list.append(percision)
                 recall_list.append(recall)
 
-                if predictedBoundaryBox.label in kek:
-                    kek[predictedBoundaryBox.label].update(predictedBoundaryBox, str)
+                if predictedBoundaryBox.label in imgdict:
+                    imgdict[predictedBoundaryBox.label].update(predictedBoundaryBox, str)
 
 
 
                 #data.append((predictedBoundaryBox, str, percision, recall))
 
-        return cls(bbox_list, tp_fp_list, percision_list, recall_list, kek)
+        return cls(bbox_list, tp_fp_list, percision_list, recall_list, imgdict)
 
 if __name__ == '__main__':
     plt.plot([1,2,3,20])
