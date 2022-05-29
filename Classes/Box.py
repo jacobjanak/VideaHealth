@@ -1,8 +1,3 @@
-"""
-TO DO: Description
-"""
-
-
 class Box:
 
     def __init__(self, label, x1, y1, x2, y2, score=None):

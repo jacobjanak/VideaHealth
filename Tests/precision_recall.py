@@ -99,9 +99,8 @@ def precision_recall_iou(image_pred, image_gt, iou_threshold=0.5):
     return precision, recall
 
 
-def f1_iou(image_pred, image_gt, iou_threshold=0.5):
-    precision, recall = precision_recall_iou(image_pred, image_gt, iou_threshold)
-    # edge case
+def f1_iou(precision, recall):
+    print("hello\n")
     if precision + recall <= 0:
         return 2 * (precision * recall) / -1
     return 2 * (precision * recall) / (precision + recall)
@@ -132,11 +131,9 @@ def precision_recall_ious(images_pred, images_gt, iou_threshold=0.5):
     # return sum_f1
 
 
-def f1_ious(images_pred, images_gt, iou_threshold=0.5):
-    sum_precision, sum_recall = precision_recall_ious(images_pred, images_gt, iou_threshold)
-
-    f1_divisor = (sum_precision + sum_recall) if (sum_precision + sum_recall) > 0 else -1
-    sum_f1 = 2 * (sum_precision * sum_recall) / f1_divisor
+def f1_ious(precision, recall):
+    f1_divisor = (precision + recall) if (precision + recall) > 0 else -1
+    sum_f1 = 2 * (precision * recall) / f1_divisor
     return sum_f1
 
 

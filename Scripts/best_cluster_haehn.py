@@ -1,5 +1,4 @@
 """
-Dis is Monke code
 idea:
     1. pick best score box
     2. cluster all box overlapped this best box using IOU

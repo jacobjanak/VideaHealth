@@ -45,3 +45,5 @@ def relabel(images):
 				   			boxes[i].new_label(l_num + 1)
 				   		else:
 				   			boxes[i].new_label(r_num - 1)
+
+	return images
